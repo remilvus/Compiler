@@ -5,25 +5,24 @@ reserved = {word: word.upper() for word in 'if then for while break continue ret
 
 tokens = ['PLUS',  'MINUS',  'TIMES',  'DIVIDE',
           'PLUS_MAT', 'MINUS_MAT', 'TIMES_MAT', "DIVIDE_MAT",
-          'INT', 'FLOAT', 'STRING', 'ID', 'COMMENT',
           'ASSIGN', 'MINUS_ASSIGN', 'PLUS_ASSIGN', 'TIMES_ASSIGN', 'DIVIDE_ASSIGN',
           'EQ', 'NE', 'LT', 'LE', 'GT', 'GE',
+          'FLOAT', 'INT', 'STRING', 'ID', 'COMMENT',
          # 'LPAREN',  'RPAREN', 'LBRACE', 'RBRACE', 'LBRACK', 'RBRACK',
           #'RANGE', "TRANS", 'COM', 'SEMCOL'
-            ] + list(reserved.values())
+          ] + list(reserved.values())
 
 
+# operators
+t_PLUS = r'\+'
+t_MINUS = r'-'
+t_TIMES = r'\*'
+t_DIVIDE = r'/'
 
-# patterns
-t_PLUS    = r'\+'
-t_MINUS   = r'-'
-t_TIMES   = r'\*'
-t_DIVIDE  = r'/'
-
-t_PLUS_MAT    = r'\.\+'
-t_MINUS_MAT   = r'\.-'
-t_TIMES_MAT   = r'\.\*'
-t_DIVIDE_MAT  = r'\./'
+t_PLUS_MAT = r'\.\+'
+t_MINUS_MAT = r'\.-'
+t_TIMES_MAT = r'\.\*'
+t_DIVIDE_MAT = r'\./'
 
 t_ASSIGN = r'='
 t_MINUS_ASSIGN = r'-='
@@ -50,39 +49,56 @@ t_GE = r'>='
 # t_COM = r','
 # t_SEMCOL = r';'
 
-t_STRING = r'".*"'
-
 literals = "()[]{}:',;"
 
-# ignored chars
-t_ignore = '  \t'
 
 # value extraction
 def t_FLOAT(t):
-    r'(\d*\.\d+)|(\d+\.\d*)'
+    r'((\d*\.\d+)|(\d+\.\d*))(E-?\d+)?'
     t.value = float(t.value)
     return t
+
 
 def t_INT(t):
     r'\d+'
     t.value = int(t.value)
     return t
 
+
+t_STRING = r'".*"'
+
+
+# variables
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+    t.type = reserved.get(t.value, 'ID')    # Check for reserved words
     return t
 
+
+# comments
+t_ignore_COMMENT = r'\#.*'
+
+
+# whitespace characters
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-def t_error(t) :
-    print("Illegal character '%s'" % t.value[0])
+
+t_ignore = ' \t'
+
+
+# error handling
+def t_error(t):
+    print("Illegal character '%s' in line %d column %d" %
+          (t.value[0], t.lexer.lineno, find_column(t.lexer.lexdata, t.lexer.lexpos)))
     t.lexer.skip(1)
 
-def t_COMMENT(t):
-    r'\#.*'
-    pass
+
+# auxiliary function
+def find_column(input_text, token_lexpos):
+    line_start = input_text.rfind('\n', 0, token_lexpos) + 1
+    return (token_lexpos - line_start) + 1
+
 
 lexer = lex.lex()
