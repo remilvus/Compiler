@@ -21,3 +21,5 @@ if (m==n) {
         print res;
 }
 
+# Examples of wrong input:
+& ^    \@
