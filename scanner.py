@@ -64,8 +64,10 @@ def t_INT(t):
     t.value = int(t.value)
     return t
 
-
-t_STRING = r'".*"'
+def t_STRING(t):
+    r'".*"'
+    t.value = t.value[1:-1]
+    return t
 
 
 # variables
