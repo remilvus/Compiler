@@ -54,7 +54,7 @@ literals = "()[]{}:',;"
 
 # value extraction
 def t_FLOAT(t):
-    r'((\d*\.\d+)|(\d+\.\d*))(E-?\d+)?'
+    r'((\d*\.\d+)|(\d+\.))(E[-+]?\d+)?'
     t.value = float(t.value)
     return t
 
@@ -64,9 +64,11 @@ def t_INT(t):
     t.value = int(t.value)
     return t
 
+
 def t_STRING(t):
-    r'".*"'
+    r'"([^"\\]|(\\")|(\\\\))*"'
     t.value = t.value[1:-1]
+    t.value = t.value.replace(r'\"', r'"').replace('\\\\', '\\')
     return t
 
 

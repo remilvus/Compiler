@@ -1,5 +1,6 @@
 import sys
 import scanner
+import parser
 
 if __name__ == '__main__':
 
@@ -10,13 +11,13 @@ if __name__ == '__main__':
         print("Cannot open {0} file".format(filename))
         sys.exit(0)
 
+    parser = parser.parser
     text = file.read()
-    lexer = scanner.lexer  
-    lexer.input(text)
+    parser.parse(text, lexer=scanner.lexer)
 
     # Tokenize
     while True:
-        tok = lexer.token()
+        tok = scanner.lexer.token()
         if not tok: 
             break    # No more input
 

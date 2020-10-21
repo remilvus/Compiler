@@ -1,0 +1,297 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ASSIGN
+    BREAK
+    COMMENT
+    CONTINUE
+    DIVIDE
+    DIVIDE_ASSIGN
+    DIVIDE_MAT
+    EQ
+    EYE
+    FLOAT
+    FOR
+    GE
+    GT
+    ID
+    IF
+    LE
+    LT
+    MINUS_ASSIGN
+    MINUS_MAT
+    NE
+    ONES
+    PLUS_ASSIGN
+    PLUS_MAT
+    PRINT
+    RETURN
+    STRING
+    THEN
+    TIMES
+    TIMES_ASSIGN
+    TIMES_MAT
+    WHILE
+    ZEROS
+
+Grammar
+
+Rule 0     S' -> term
+Rule 1     term -> INT
+Rule 2     term -> term PLUS term
+Rule 3     term -> term MINUS term
+Rule 4     term -> term  term
+Rule 5     term -> term / term
+
+Terminals, with rules where they appear
+
+                     : 4
+/                    : 5
+ASSIGN               : 
+BREAK                : 
+COMMENT              : 
+CONTINUE             : 
+DIVIDE               : 
+DIVIDE_ASSIGN        : 
+DIVIDE_MAT           : 
+EQ                   : 
+EYE                  : 
+FLOAT                : 
+FOR                  : 
+GE                   : 
+GT                   : 
+ID                   : 
+IF                   : 
+INT                  : 1
+LE                   : 
+LT                   : 
+MINUS                : 3
+MINUS_ASSIGN         : 
+MINUS_MAT            : 
+NE                   : 
+ONES                 : 
+PLUS                 : 2
+PLUS_ASSIGN          : 
+PLUS_MAT             : 
+PRINT                : 
+RETURN               : 
+STRING               : 
+THEN                 : 
+TIMES                : 
+TIMES_ASSIGN         : 
+TIMES_MAT            : 
+WHILE                : 
+ZEROS                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+term                 : 2 2 3 3 4 4 5 5 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . term
+    (1) term -> . INT
+    (2) term -> . term PLUS term
+    (3) term -> . term MINUS term
+    (4) term -> . term  term
+    (5) term -> . term / term
+
+    INT             shift and go to state 2
+
+    term                           shift and go to state 1
+
+state 1
+
+    (0) S' -> term .
+    (2) term -> term . PLUS term
+    (3) term -> term . MINUS term
+    (4) term -> term .  term
+    (5) term -> term . / term
+
+    PLUS            shift and go to state 3
+    MINUS           shift and go to state 4
+                    shift and go to state 5
+    /               shift and go to state 6
+
+
+state 2
+
+    (1) term -> INT .
+
+    PLUS            reduce using rule 1 (term -> INT .)
+    MINUS           reduce using rule 1 (term -> INT .)
+                    reduce using rule 1 (term -> INT .)
+    /               reduce using rule 1 (term -> INT .)
+    $end            reduce using rule 1 (term -> INT .)
+
+
+state 3
+
+    (2) term -> term PLUS . term
+    (1) term -> . INT
+    (2) term -> . term PLUS term
+    (3) term -> . term MINUS term
+    (4) term -> . term  term
+    (5) term -> . term / term
+
+    INT             shift and go to state 2
+
+    term                           shift and go to state 7
+
+state 4
+
+    (3) term -> term MINUS . term
+    (1) term -> . INT
+    (2) term -> . term PLUS term
+    (3) term -> . term MINUS term
+    (4) term -> . term  term
+    (5) term -> . term / term
+
+    INT             shift and go to state 2
+
+    term                           shift and go to state 8
+
+state 5
+
+    (4) term -> term  . term
+    (1) term -> . INT
+    (2) term -> . term PLUS term
+    (3) term -> . term MINUS term
+    (4) term -> . term  term
+    (5) term -> . term / term
+
+    INT             shift and go to state 2
+
+    term                           shift and go to state 9
+
+state 6
+
+    (5) term -> term / . term
+    (1) term -> . INT
+    (2) term -> . term PLUS term
+    (3) term -> . term MINUS term
+    (4) term -> . term  term
+    (5) term -> . term / term
+
+    INT             shift and go to state 2
+
+    term                           shift and go to state 10
+
+state 7
+
+    (2) term -> term PLUS term .
+    (2) term -> term . PLUS term
+    (3) term -> term . MINUS term
+    (4) term -> term .  term
+    (5) term -> term . / term
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for  resolved as shift
+  ! shift/reduce conflict for / resolved as shift
+    $end            reduce using rule 2 (term -> term PLUS term .)
+    PLUS            shift and go to state 3
+    MINUS           shift and go to state 4
+                    shift and go to state 5
+    /               shift and go to state 6
+
+  ! PLUS            [ reduce using rule 2 (term -> term PLUS term .) ]
+  ! MINUS           [ reduce using rule 2 (term -> term PLUS term .) ]
+  !                 [ reduce using rule 2 (term -> term PLUS term .) ]
+  ! /               [ reduce using rule 2 (term -> term PLUS term .) ]
+
+
+state 8
+
+    (3) term -> term MINUS term .
+    (2) term -> term . PLUS term
+    (3) term -> term . MINUS term
+    (4) term -> term .  term
+    (5) term -> term . / term
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for  resolved as shift
+  ! shift/reduce conflict for / resolved as shift
+    $end            reduce using rule 3 (term -> term MINUS term .)
+    PLUS            shift and go to state 3
+    MINUS           shift and go to state 4
+                    shift and go to state 5
+    /               shift and go to state 6
+
+  ! PLUS            [ reduce using rule 3 (term -> term MINUS term .) ]
+  ! MINUS           [ reduce using rule 3 (term -> term MINUS term .) ]
+  !                 [ reduce using rule 3 (term -> term MINUS term .) ]
+  ! /               [ reduce using rule 3 (term -> term MINUS term .) ]
+
+
+state 9
+
+    (4) term -> term  term .
+    (2) term -> term . PLUS term
+    (3) term -> term . MINUS term
+    (4) term -> term .  term
+    (5) term -> term . / term
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for  resolved as shift
+  ! shift/reduce conflict for / resolved as shift
+    $end            reduce using rule 4 (term -> term  term .)
+    PLUS            shift and go to state 3
+    MINUS           shift and go to state 4
+                    shift and go to state 5
+    /               shift and go to state 6
+
+  ! PLUS            [ reduce using rule 4 (term -> term  term .) ]
+  ! MINUS           [ reduce using rule 4 (term -> term  term .) ]
+  !                 [ reduce using rule 4 (term -> term  term .) ]
+  ! /               [ reduce using rule 4 (term -> term  term .) ]
+
+
+state 10
+
+    (5) term -> term / term .
+    (2) term -> term . PLUS term
+    (3) term -> term . MINUS term
+    (4) term -> term .  term
+    (5) term -> term . / term
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for  resolved as shift
+  ! shift/reduce conflict for / resolved as shift
+    $end            reduce using rule 5 (term -> term / term .)
+    PLUS            shift and go to state 3
+    MINUS           shift and go to state 4
+                    shift and go to state 5
+    /               shift and go to state 6
+
+  ! PLUS            [ reduce using rule 5 (term -> term / term .) ]
+  ! MINUS           [ reduce using rule 5 (term -> term / term .) ]
+  !                 [ reduce using rule 5 (term -> term / term .) ]
+  ! /               [ reduce using rule 5 (term -> term / term .) ]
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for PLUS in state 7 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 7 resolved as shift
+WARNING: shift/reduce conflict for  in state 7 resolved as shift
+WARNING: shift/reduce conflict for / in state 7 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 8 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 8 resolved as shift
+WARNING: shift/reduce conflict for  in state 8 resolved as shift
+WARNING: shift/reduce conflict for / in state 8 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 9 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 9 resolved as shift
+WARNING: shift/reduce conflict for  in state 9 resolved as shift
+WARNING: shift/reduce conflict for / in state 9 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 10 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 10 resolved as shift
+WARNING: shift/reduce conflict for  in state 10 resolved as shift
+WARNING: shift/reduce conflict for / in state 10 resolved as shift
