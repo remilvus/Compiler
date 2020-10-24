@@ -2,9 +2,10 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    DIVIDE
-    MINUS
-    TIMES
+    BREAK
+    COMMENT
+    CONTINUE
+    RETURN
 
 Grammar
 
@@ -14,91 +15,143 @@ Rule 2     number -> FLOAT
 Rule 3     expression -> ID
 Rule 4     expression -> number
 Rule 5     expression -> STRING
-Rule 6     inner_vector -> expression , expression
-Rule 7     inner_vector -> inner_vector , expression
-Rule 8     vector -> [ expression ]
-Rule 9     vector -> [ inner_vector ]
-Rule 10    inner_matrix -> vector
-Rule 11    inner_matrix -> inner_matrix , vector
-Rule 12    matrix -> [ inner_matrix ]
-Rule 13    expression -> expression PLUS expression
-Rule 14    expression -> expression EQ expression
-Rule 15    statement -> ID ASSIGN expression ;
-Rule 16    statement -> ID MINUS_ASSIGN expression ;
-Rule 17    statement -> ID PLUS_ASSIGN expression ;
-Rule 18    statement -> ID TIMES_ASSIGN expression ;
-Rule 19    statement -> ID DIVIDE_ASSIGN expression ;
-Rule 20    code_block -> { statements_list }
-Rule 21    code_block -> { statement }
-Rule 22    statements_list -> statements_list statement
-Rule 23    statements_list -> statement statement
-Rule 24    statement -> IF ( expression ) statement
-Rule 25    statement -> IF ( expression ) code_block
-Rule 26    statement -> IF ( expression ) statement else_block
-Rule 27    statement -> IF ( expression ) code_block else_block
-Rule 28    else_block -> ELSE statement
-Rule 29    else_block -> ELSE code_block
+Rule 6     expression -> matrix
+Rule 7     inner_vector -> expression , expression
+Rule 8     inner_vector -> inner_vector , expression
+Rule 9     vector -> [ expression ]
+Rule 10    vector -> [ inner_vector ]
+Rule 11    inner_matrix -> vector
+Rule 12    inner_matrix -> inner_matrix , vector
+Rule 13    matrix -> [ inner_matrix ]
+Rule 14    matrix -> ZEROS
+Rule 15    matrix -> EYE
+Rule 16    matrix -> ONES
+Rule 17    range -> INT : INT
+Rule 18    expression -> expression PLUS expression
+Rule 19    expression -> expression MINUS expression
+Rule 20    expression -> expression TIMES expression
+Rule 21    expression -> expression DIVIDE expression
+Rule 22    expression -> expression PLUS_MAT expression
+Rule 23    expression -> expression MINUS_MAT expression
+Rule 24    expression -> expression TIMES_MAT expression
+Rule 25    expression -> expression DIVIDE_MAT expression
+Rule 26    expression -> MINUS expression
+Rule 27    expression -> expression EQ expression
+Rule 28    expression -> expression NE expression
+Rule 29    expression -> expression GT expression
+Rule 30    expression -> expression GE expression
+Rule 31    expression -> expression LT expression
+Rule 32    expression -> expression LE expression
+Rule 33    statement -> ID ASSIGN expression ;
+Rule 34    statement -> ID MINUS_ASSIGN expression ;
+Rule 35    statement -> ID PLUS_ASSIGN expression ;
+Rule 36    statement -> ID TIMES_ASSIGN expression ;
+Rule 37    statement -> ID DIVIDE_ASSIGN expression ;
+Rule 38    code_block -> { statements_list }
+Rule 39    code_block -> { statement }
+Rule 40    statements_list -> statements_list statement
+Rule 41    statements_list -> statement statement
+Rule 42    statement -> FOR ID EQ range code_block
+Rule 43    statement -> FOR ID EQ range statement
+Rule 44    statement -> WHILE ( expression ) code_block
+Rule 45    statement -> WHILE ( expression ) statement
+Rule 46    statement -> IF ( expression ) statement
+Rule 47    statement -> IF ( expression ) code_block
+Rule 48    statement -> IF ( expression ) statement else_block
+Rule 49    statement -> IF ( expression ) code_block else_block
+Rule 50    else_block -> ELSE statement
+Rule 51    else_block -> ELSE code_block
+Rule 52    statement -> PRINT inner_vector ;
 
 Terminals, with rules where they appear
 
-(                    : 24 25 26 27
-)                    : 24 25 26 27
-,                    : 6 7 11
-;                    : 15 16 17 18 19
-ASSIGN               : 15
-DIVIDE               : 
-DIVIDE_ASSIGN        : 19
-ELSE                 : 28 29
-EQ                   : 14
+(                    : 44 45 46 47 48 49
+)                    : 44 45 46 47 48 49
+,                    : 7 8 12
+:                    : 17
+;                    : 33 34 35 36 37 52
+ASSIGN               : 33
+BREAK                : 
+COMMENT              : 
+CONTINUE             : 
+DIVIDE               : 21
+DIVIDE_ASSIGN        : 37
+DIVIDE_MAT           : 25
+ELSE                 : 50 51
+EQ                   : 27 42 43
+EYE                  : 15
 FLOAT                : 2
-ID                   : 3 15 16 17 18 19
-IF                   : 24 25 26 27
-INT                  : 1
-MINUS                : 
-MINUS_ASSIGN         : 16
-PLUS                 : 13
-PLUS_ASSIGN          : 17
+FOR                  : 42 43
+GE                   : 30
+GT                   : 29
+ID                   : 3 33 34 35 36 37 42 43
+IF                   : 46 47 48 49
+INT                  : 1 17 17
+LE                   : 32
+LT                   : 31
+MINUS                : 19 26
+MINUS_ASSIGN         : 34
+MINUS_MAT            : 23
+NE                   : 28
+ONES                 : 16
+PLUS                 : 18
+PLUS_ASSIGN          : 35
+PLUS_MAT             : 22
+PRINT                : 52
+RETURN               : 
 STRING               : 5
-TIMES                : 
-TIMES_ASSIGN         : 18
-[                    : 8 9 12
-]                    : 8 9 12
+TIMES                : 20
+TIMES_ASSIGN         : 36
+TIMES_MAT            : 24
+WHILE                : 44 45
+ZEROS                : 14
+[                    : 9 10 13
+]                    : 9 10 13
 error                : 
-{                    : 20 21
-}                    : 20 21
+{                    : 38 39
+}                    : 38 39
 
 Nonterminals, with rules where they appear
 
-code_block           : 25 27 29
-else_block           : 26 27
-expression           : 6 6 7 8 13 13 14 14 15 16 17 18 19 24 25 26 27
-inner_matrix         : 11 12
-inner_vector         : 7 9
-matrix               : 
+code_block           : 42 44 47 49 51
+else_block           : 48 49
+expression           : 7 7 8 9 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 27 27 28 28 29 29 30 30 31 31 32 32 33 34 35 36 37 44 45 46 47 48 49
+inner_matrix         : 12 13
+inner_vector         : 8 10 52
+matrix               : 6
 number               : 4
-statement            : 21 22 23 23 24 26 28
-statements_list      : 20 22 0
-vector               : 10 11
+range                : 42 43
+statement            : 39 40 41 41 43 45 46 48 50
+statements_list      : 38 40 0
+vector               : 11 12
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . statements_list
-    (22) statements_list -> . statements_list statement
-    (23) statements_list -> . statement statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (40) statements_list -> . statements_list statement
+    (41) statements_list -> . statement statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
 
     ID              shift and go to state 3
-    IF              shift and go to state 4
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
 
     statements_list                shift and go to state 1
     statement                      shift and go to state 2
@@ -106,650 +159,3280 @@ state 0
 state 1
 
     (0) S' -> statements_list .
-    (22) statements_list -> statements_list . statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (40) statements_list -> statements_list . statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
 
     ID              shift and go to state 3
-    IF              shift and go to state 4
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
 
-    statement                      shift and go to state 5
+    statement                      shift and go to state 8
 
 state 2
 
-    (23) statements_list -> statement . statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (41) statements_list -> statement . statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
 
     ID              shift and go to state 3
-    IF              shift and go to state 4
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
 
-    statement                      shift and go to state 6
+    statement                      shift and go to state 9
 
 state 3
 
-    (15) statement -> ID . ASSIGN expression ;
-    (16) statement -> ID . MINUS_ASSIGN expression ;
-    (17) statement -> ID . PLUS_ASSIGN expression ;
-    (18) statement -> ID . TIMES_ASSIGN expression ;
-    (19) statement -> ID . DIVIDE_ASSIGN expression ;
+    (33) statement -> ID . ASSIGN expression ;
+    (34) statement -> ID . MINUS_ASSIGN expression ;
+    (35) statement -> ID . PLUS_ASSIGN expression ;
+    (36) statement -> ID . TIMES_ASSIGN expression ;
+    (37) statement -> ID . DIVIDE_ASSIGN expression ;
 
-    ASSIGN          shift and go to state 7
-    MINUS_ASSIGN    shift and go to state 8
-    PLUS_ASSIGN     shift and go to state 9
-    TIMES_ASSIGN    shift and go to state 10
-    DIVIDE_ASSIGN   shift and go to state 11
+    ASSIGN          shift and go to state 10
+    MINUS_ASSIGN    shift and go to state 11
+    PLUS_ASSIGN     shift and go to state 12
+    TIMES_ASSIGN    shift and go to state 13
+    DIVIDE_ASSIGN   shift and go to state 14
 
 
 state 4
 
-    (24) statement -> IF . ( expression ) statement
-    (25) statement -> IF . ( expression ) code_block
-    (26) statement -> IF . ( expression ) statement else_block
-    (27) statement -> IF . ( expression ) code_block else_block
+    (42) statement -> FOR . ID EQ range code_block
+    (43) statement -> FOR . ID EQ range statement
 
-    (               shift and go to state 12
+    ID              shift and go to state 15
 
 
 state 5
 
-    (22) statements_list -> statements_list statement .
+    (44) statement -> WHILE . ( expression ) code_block
+    (45) statement -> WHILE . ( expression ) statement
 
-    ID              reduce using rule 22 (statements_list -> statements_list statement .)
-    IF              reduce using rule 22 (statements_list -> statements_list statement .)
-    $end            reduce using rule 22 (statements_list -> statements_list statement .)
-    }               reduce using rule 22 (statements_list -> statements_list statement .)
+    (               shift and go to state 16
 
 
 state 6
 
-    (23) statements_list -> statement statement .
+    (46) statement -> IF . ( expression ) statement
+    (47) statement -> IF . ( expression ) code_block
+    (48) statement -> IF . ( expression ) statement else_block
+    (49) statement -> IF . ( expression ) code_block else_block
 
-    ID              reduce using rule 23 (statements_list -> statement statement .)
-    IF              reduce using rule 23 (statements_list -> statement statement .)
-    $end            reduce using rule 23 (statements_list -> statement statement .)
-    }               reduce using rule 23 (statements_list -> statement statement .)
+    (               shift and go to state 17
 
 
 state 7
 
-    (15) statement -> ID ASSIGN . expression ;
+    (52) statement -> PRINT . inner_vector ;
+    (7) inner_vector -> . expression , expression
+    (8) inner_vector -> . inner_vector , expression
     (3) expression -> . ID
     (4) expression -> . number
     (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
     (1) number -> . INT
     (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    expression                     shift and go to state 14
-    number                         shift and go to state 15
+    inner_vector                   shift and go to state 18
+    expression                     shift and go to state 19
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 8
 
-    (16) statement -> ID MINUS_ASSIGN . expression ;
-    (3) expression -> . ID
-    (4) expression -> . number
-    (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
-    (1) number -> . INT
-    (2) number -> . FLOAT
+    (40) statements_list -> statements_list statement .
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              reduce using rule 40 (statements_list -> statements_list statement .)
+    FOR             reduce using rule 40 (statements_list -> statements_list statement .)
+    WHILE           reduce using rule 40 (statements_list -> statements_list statement .)
+    IF              reduce using rule 40 (statements_list -> statements_list statement .)
+    PRINT           reduce using rule 40 (statements_list -> statements_list statement .)
+    $end            reduce using rule 40 (statements_list -> statements_list statement .)
+    }               reduce using rule 40 (statements_list -> statements_list statement .)
 
-    expression                     shift and go to state 19
-    number                         shift and go to state 15
 
 state 9
 
-    (17) statement -> ID PLUS_ASSIGN . expression ;
-    (3) expression -> . ID
-    (4) expression -> . number
-    (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
-    (1) number -> . INT
-    (2) number -> . FLOAT
+    (41) statements_list -> statement statement .
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              reduce using rule 41 (statements_list -> statement statement .)
+    FOR             reduce using rule 41 (statements_list -> statement statement .)
+    WHILE           reduce using rule 41 (statements_list -> statement statement .)
+    IF              reduce using rule 41 (statements_list -> statement statement .)
+    PRINT           reduce using rule 41 (statements_list -> statement statement .)
+    $end            reduce using rule 41 (statements_list -> statement statement .)
+    }               reduce using rule 41 (statements_list -> statement statement .)
 
-    expression                     shift and go to state 20
-    number                         shift and go to state 15
 
 state 10
 
-    (18) statement -> ID TIMES_ASSIGN . expression ;
+    (33) statement -> ID ASSIGN . expression ;
     (3) expression -> . ID
     (4) expression -> . number
     (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
     (1) number -> . INT
     (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    expression                     shift and go to state 21
-    number                         shift and go to state 15
+    expression                     shift and go to state 31
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 11
 
-    (19) statement -> ID DIVIDE_ASSIGN . expression ;
+    (34) statement -> ID MINUS_ASSIGN . expression ;
     (3) expression -> . ID
     (4) expression -> . number
     (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
     (1) number -> . INT
     (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    expression                     shift and go to state 22
-    number                         shift and go to state 15
+    expression                     shift and go to state 32
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 12
 
-    (24) statement -> IF ( . expression ) statement
-    (25) statement -> IF ( . expression ) code_block
-    (26) statement -> IF ( . expression ) statement else_block
-    (27) statement -> IF ( . expression ) code_block else_block
+    (35) statement -> ID PLUS_ASSIGN . expression ;
     (3) expression -> . ID
     (4) expression -> . number
     (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
     (1) number -> . INT
     (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    expression                     shift and go to state 23
-    number                         shift and go to state 15
+    expression                     shift and go to state 33
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 13
 
-    (3) expression -> ID .
+    (36) statement -> ID TIMES_ASSIGN . expression ;
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ;               reduce using rule 3 (expression -> ID .)
-    PLUS            reduce using rule 3 (expression -> ID .)
-    EQ              reduce using rule 3 (expression -> ID .)
-    )               reduce using rule 3 (expression -> ID .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 34
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 14
 
-    (15) statement -> ID ASSIGN expression . ;
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (37) statement -> ID DIVIDE_ASSIGN . expression ;
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ;               shift and go to state 24
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 35
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 15
 
-    (4) expression -> number .
+    (42) statement -> FOR ID . EQ range code_block
+    (43) statement -> FOR ID . EQ range statement
 
-    ;               reduce using rule 4 (expression -> number .)
-    PLUS            reduce using rule 4 (expression -> number .)
-    EQ              reduce using rule 4 (expression -> number .)
-    )               reduce using rule 4 (expression -> number .)
+    EQ              shift and go to state 36
 
 
 state 16
 
-    (5) expression -> STRING .
+    (44) statement -> WHILE ( . expression ) code_block
+    (45) statement -> WHILE ( . expression ) statement
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ;               reduce using rule 5 (expression -> STRING .)
-    PLUS            reduce using rule 5 (expression -> STRING .)
-    EQ              reduce using rule 5 (expression -> STRING .)
-    )               reduce using rule 5 (expression -> STRING .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 37
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 17
 
-    (1) number -> INT .
+    (46) statement -> IF ( . expression ) statement
+    (47) statement -> IF ( . expression ) code_block
+    (48) statement -> IF ( . expression ) statement else_block
+    (49) statement -> IF ( . expression ) code_block else_block
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ;               reduce using rule 1 (number -> INT .)
-    PLUS            reduce using rule 1 (number -> INT .)
-    EQ              reduce using rule 1 (number -> INT .)
-    )               reduce using rule 1 (number -> INT .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 38
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 18
 
-    (2) number -> FLOAT .
+    (52) statement -> PRINT inner_vector . ;
+    (8) inner_vector -> inner_vector . , expression
 
-    ;               reduce using rule 2 (number -> FLOAT .)
-    PLUS            reduce using rule 2 (number -> FLOAT .)
-    EQ              reduce using rule 2 (number -> FLOAT .)
-    )               reduce using rule 2 (number -> FLOAT .)
+    ;               shift and go to state 39
+    ,               shift and go to state 40
 
 
 state 19
 
-    (16) statement -> ID MINUS_ASSIGN expression . ;
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (7) inner_vector -> expression . , expression
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ;               shift and go to state 27
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ,               shift and go to state 41
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
 
 state 20
 
-    (17) statement -> ID PLUS_ASSIGN expression . ;
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (3) expression -> ID .
 
-    ;               shift and go to state 28
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ,               reduce using rule 3 (expression -> ID .)
+    PLUS            reduce using rule 3 (expression -> ID .)
+    MINUS           reduce using rule 3 (expression -> ID .)
+    TIMES           reduce using rule 3 (expression -> ID .)
+    DIVIDE          reduce using rule 3 (expression -> ID .)
+    PLUS_MAT        reduce using rule 3 (expression -> ID .)
+    MINUS_MAT       reduce using rule 3 (expression -> ID .)
+    TIMES_MAT       reduce using rule 3 (expression -> ID .)
+    DIVIDE_MAT      reduce using rule 3 (expression -> ID .)
+    EQ              reduce using rule 3 (expression -> ID .)
+    NE              reduce using rule 3 (expression -> ID .)
+    GT              reduce using rule 3 (expression -> ID .)
+    GE              reduce using rule 3 (expression -> ID .)
+    LT              reduce using rule 3 (expression -> ID .)
+    LE              reduce using rule 3 (expression -> ID .)
+    ;               reduce using rule 3 (expression -> ID .)
+    )               reduce using rule 3 (expression -> ID .)
+    ]               reduce using rule 3 (expression -> ID .)
 
 
 state 21
 
-    (18) statement -> ID TIMES_ASSIGN expression . ;
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (4) expression -> number .
 
-    ;               shift and go to state 29
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ,               reduce using rule 4 (expression -> number .)
+    PLUS            reduce using rule 4 (expression -> number .)
+    MINUS           reduce using rule 4 (expression -> number .)
+    TIMES           reduce using rule 4 (expression -> number .)
+    DIVIDE          reduce using rule 4 (expression -> number .)
+    PLUS_MAT        reduce using rule 4 (expression -> number .)
+    MINUS_MAT       reduce using rule 4 (expression -> number .)
+    TIMES_MAT       reduce using rule 4 (expression -> number .)
+    DIVIDE_MAT      reduce using rule 4 (expression -> number .)
+    EQ              reduce using rule 4 (expression -> number .)
+    NE              reduce using rule 4 (expression -> number .)
+    GT              reduce using rule 4 (expression -> number .)
+    GE              reduce using rule 4 (expression -> number .)
+    LT              reduce using rule 4 (expression -> number .)
+    LE              reduce using rule 4 (expression -> number .)
+    ;               reduce using rule 4 (expression -> number .)
+    )               reduce using rule 4 (expression -> number .)
+    ]               reduce using rule 4 (expression -> number .)
 
 
 state 22
 
-    (19) statement -> ID DIVIDE_ASSIGN expression . ;
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (5) expression -> STRING .
 
-    ;               shift and go to state 30
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ,               reduce using rule 5 (expression -> STRING .)
+    PLUS            reduce using rule 5 (expression -> STRING .)
+    MINUS           reduce using rule 5 (expression -> STRING .)
+    TIMES           reduce using rule 5 (expression -> STRING .)
+    DIVIDE          reduce using rule 5 (expression -> STRING .)
+    PLUS_MAT        reduce using rule 5 (expression -> STRING .)
+    MINUS_MAT       reduce using rule 5 (expression -> STRING .)
+    TIMES_MAT       reduce using rule 5 (expression -> STRING .)
+    DIVIDE_MAT      reduce using rule 5 (expression -> STRING .)
+    EQ              reduce using rule 5 (expression -> STRING .)
+    NE              reduce using rule 5 (expression -> STRING .)
+    GT              reduce using rule 5 (expression -> STRING .)
+    GE              reduce using rule 5 (expression -> STRING .)
+    LT              reduce using rule 5 (expression -> STRING .)
+    LE              reduce using rule 5 (expression -> STRING .)
+    ;               reduce using rule 5 (expression -> STRING .)
+    )               reduce using rule 5 (expression -> STRING .)
+    ]               reduce using rule 5 (expression -> STRING .)
 
 
 state 23
 
-    (24) statement -> IF ( expression . ) statement
-    (25) statement -> IF ( expression . ) code_block
-    (26) statement -> IF ( expression . ) statement else_block
-    (27) statement -> IF ( expression . ) code_block else_block
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (6) expression -> matrix .
 
-    )               shift and go to state 31
-    PLUS            shift and go to state 25
-    EQ              shift and go to state 26
+    ,               reduce using rule 6 (expression -> matrix .)
+    PLUS            reduce using rule 6 (expression -> matrix .)
+    MINUS           reduce using rule 6 (expression -> matrix .)
+    TIMES           reduce using rule 6 (expression -> matrix .)
+    DIVIDE          reduce using rule 6 (expression -> matrix .)
+    PLUS_MAT        reduce using rule 6 (expression -> matrix .)
+    MINUS_MAT       reduce using rule 6 (expression -> matrix .)
+    TIMES_MAT       reduce using rule 6 (expression -> matrix .)
+    DIVIDE_MAT      reduce using rule 6 (expression -> matrix .)
+    EQ              reduce using rule 6 (expression -> matrix .)
+    NE              reduce using rule 6 (expression -> matrix .)
+    GT              reduce using rule 6 (expression -> matrix .)
+    GE              reduce using rule 6 (expression -> matrix .)
+    LT              reduce using rule 6 (expression -> matrix .)
+    LE              reduce using rule 6 (expression -> matrix .)
+    ;               reduce using rule 6 (expression -> matrix .)
+    )               reduce using rule 6 (expression -> matrix .)
+    ]               reduce using rule 6 (expression -> matrix .)
 
 
 state 24
 
-    (15) statement -> ID ASSIGN expression ; .
+    (26) expression -> MINUS . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ID              reduce using rule 15 (statement -> ID ASSIGN expression ; .)
-    IF              reduce using rule 15 (statement -> ID ASSIGN expression ; .)
-    $end            reduce using rule 15 (statement -> ID ASSIGN expression ; .)
-    ELSE            reduce using rule 15 (statement -> ID ASSIGN expression ; .)
-    }               reduce using rule 15 (statement -> ID ASSIGN expression ; .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 56
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 25
 
-    (13) expression -> expression PLUS . expression
-    (3) expression -> . ID
-    (4) expression -> . number
-    (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
-    (1) number -> . INT
-    (2) number -> . FLOAT
+    (1) number -> INT .
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ,               reduce using rule 1 (number -> INT .)
+    PLUS            reduce using rule 1 (number -> INT .)
+    MINUS           reduce using rule 1 (number -> INT .)
+    TIMES           reduce using rule 1 (number -> INT .)
+    DIVIDE          reduce using rule 1 (number -> INT .)
+    PLUS_MAT        reduce using rule 1 (number -> INT .)
+    MINUS_MAT       reduce using rule 1 (number -> INT .)
+    TIMES_MAT       reduce using rule 1 (number -> INT .)
+    DIVIDE_MAT      reduce using rule 1 (number -> INT .)
+    EQ              reduce using rule 1 (number -> INT .)
+    NE              reduce using rule 1 (number -> INT .)
+    GT              reduce using rule 1 (number -> INT .)
+    GE              reduce using rule 1 (number -> INT .)
+    LT              reduce using rule 1 (number -> INT .)
+    LE              reduce using rule 1 (number -> INT .)
+    ;               reduce using rule 1 (number -> INT .)
+    )               reduce using rule 1 (number -> INT .)
+    ]               reduce using rule 1 (number -> INT .)
 
-    expression                     shift and go to state 32
-    number                         shift and go to state 15
 
 state 26
 
-    (14) expression -> expression EQ . expression
-    (3) expression -> . ID
-    (4) expression -> . number
-    (5) expression -> . STRING
-    (13) expression -> . expression PLUS expression
-    (14) expression -> . expression EQ expression
-    (1) number -> . INT
-    (2) number -> . FLOAT
+    (2) number -> FLOAT .
 
-    ID              shift and go to state 13
-    STRING          shift and go to state 16
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
+    ,               reduce using rule 2 (number -> FLOAT .)
+    PLUS            reduce using rule 2 (number -> FLOAT .)
+    MINUS           reduce using rule 2 (number -> FLOAT .)
+    TIMES           reduce using rule 2 (number -> FLOAT .)
+    DIVIDE          reduce using rule 2 (number -> FLOAT .)
+    PLUS_MAT        reduce using rule 2 (number -> FLOAT .)
+    MINUS_MAT       reduce using rule 2 (number -> FLOAT .)
+    TIMES_MAT       reduce using rule 2 (number -> FLOAT .)
+    DIVIDE_MAT      reduce using rule 2 (number -> FLOAT .)
+    EQ              reduce using rule 2 (number -> FLOAT .)
+    NE              reduce using rule 2 (number -> FLOAT .)
+    GT              reduce using rule 2 (number -> FLOAT .)
+    GE              reduce using rule 2 (number -> FLOAT .)
+    LT              reduce using rule 2 (number -> FLOAT .)
+    LE              reduce using rule 2 (number -> FLOAT .)
+    ;               reduce using rule 2 (number -> FLOAT .)
+    )               reduce using rule 2 (number -> FLOAT .)
+    ]               reduce using rule 2 (number -> FLOAT .)
 
-    expression                     shift and go to state 33
-    number                         shift and go to state 15
 
 state 27
 
-    (16) statement -> ID MINUS_ASSIGN expression ; .
+    (13) matrix -> [ . inner_matrix ]
+    (11) inner_matrix -> . vector
+    (12) inner_matrix -> . inner_matrix , vector
+    (9) vector -> . [ expression ]
+    (10) vector -> . [ inner_vector ]
 
-    ID              reduce using rule 16 (statement -> ID MINUS_ASSIGN expression ; .)
-    IF              reduce using rule 16 (statement -> ID MINUS_ASSIGN expression ; .)
-    $end            reduce using rule 16 (statement -> ID MINUS_ASSIGN expression ; .)
-    ELSE            reduce using rule 16 (statement -> ID MINUS_ASSIGN expression ; .)
-    }               reduce using rule 16 (statement -> ID MINUS_ASSIGN expression ; .)
+    [               shift and go to state 57
 
+    inner_matrix                   shift and go to state 58
+    vector                         shift and go to state 59
 
 state 28
 
-    (17) statement -> ID PLUS_ASSIGN expression ; .
+    (14) matrix -> ZEROS .
 
-    ID              reduce using rule 17 (statement -> ID PLUS_ASSIGN expression ; .)
-    IF              reduce using rule 17 (statement -> ID PLUS_ASSIGN expression ; .)
-    $end            reduce using rule 17 (statement -> ID PLUS_ASSIGN expression ; .)
-    ELSE            reduce using rule 17 (statement -> ID PLUS_ASSIGN expression ; .)
-    }               reduce using rule 17 (statement -> ID PLUS_ASSIGN expression ; .)
+    ,               reduce using rule 14 (matrix -> ZEROS .)
+    PLUS            reduce using rule 14 (matrix -> ZEROS .)
+    MINUS           reduce using rule 14 (matrix -> ZEROS .)
+    TIMES           reduce using rule 14 (matrix -> ZEROS .)
+    DIVIDE          reduce using rule 14 (matrix -> ZEROS .)
+    PLUS_MAT        reduce using rule 14 (matrix -> ZEROS .)
+    MINUS_MAT       reduce using rule 14 (matrix -> ZEROS .)
+    TIMES_MAT       reduce using rule 14 (matrix -> ZEROS .)
+    DIVIDE_MAT      reduce using rule 14 (matrix -> ZEROS .)
+    EQ              reduce using rule 14 (matrix -> ZEROS .)
+    NE              reduce using rule 14 (matrix -> ZEROS .)
+    GT              reduce using rule 14 (matrix -> ZEROS .)
+    GE              reduce using rule 14 (matrix -> ZEROS .)
+    LT              reduce using rule 14 (matrix -> ZEROS .)
+    LE              reduce using rule 14 (matrix -> ZEROS .)
+    ;               reduce using rule 14 (matrix -> ZEROS .)
+    )               reduce using rule 14 (matrix -> ZEROS .)
+    ]               reduce using rule 14 (matrix -> ZEROS .)
 
 
 state 29
 
-    (18) statement -> ID TIMES_ASSIGN expression ; .
+    (15) matrix -> EYE .
 
-    ID              reduce using rule 18 (statement -> ID TIMES_ASSIGN expression ; .)
-    IF              reduce using rule 18 (statement -> ID TIMES_ASSIGN expression ; .)
-    $end            reduce using rule 18 (statement -> ID TIMES_ASSIGN expression ; .)
-    ELSE            reduce using rule 18 (statement -> ID TIMES_ASSIGN expression ; .)
-    }               reduce using rule 18 (statement -> ID TIMES_ASSIGN expression ; .)
+    ,               reduce using rule 15 (matrix -> EYE .)
+    PLUS            reduce using rule 15 (matrix -> EYE .)
+    MINUS           reduce using rule 15 (matrix -> EYE .)
+    TIMES           reduce using rule 15 (matrix -> EYE .)
+    DIVIDE          reduce using rule 15 (matrix -> EYE .)
+    PLUS_MAT        reduce using rule 15 (matrix -> EYE .)
+    MINUS_MAT       reduce using rule 15 (matrix -> EYE .)
+    TIMES_MAT       reduce using rule 15 (matrix -> EYE .)
+    DIVIDE_MAT      reduce using rule 15 (matrix -> EYE .)
+    EQ              reduce using rule 15 (matrix -> EYE .)
+    NE              reduce using rule 15 (matrix -> EYE .)
+    GT              reduce using rule 15 (matrix -> EYE .)
+    GE              reduce using rule 15 (matrix -> EYE .)
+    LT              reduce using rule 15 (matrix -> EYE .)
+    LE              reduce using rule 15 (matrix -> EYE .)
+    ;               reduce using rule 15 (matrix -> EYE .)
+    )               reduce using rule 15 (matrix -> EYE .)
+    ]               reduce using rule 15 (matrix -> EYE .)
 
 
 state 30
 
-    (19) statement -> ID DIVIDE_ASSIGN expression ; .
+    (16) matrix -> ONES .
 
-    ID              reduce using rule 19 (statement -> ID DIVIDE_ASSIGN expression ; .)
-    IF              reduce using rule 19 (statement -> ID DIVIDE_ASSIGN expression ; .)
-    $end            reduce using rule 19 (statement -> ID DIVIDE_ASSIGN expression ; .)
-    ELSE            reduce using rule 19 (statement -> ID DIVIDE_ASSIGN expression ; .)
-    }               reduce using rule 19 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    ,               reduce using rule 16 (matrix -> ONES .)
+    PLUS            reduce using rule 16 (matrix -> ONES .)
+    MINUS           reduce using rule 16 (matrix -> ONES .)
+    TIMES           reduce using rule 16 (matrix -> ONES .)
+    DIVIDE          reduce using rule 16 (matrix -> ONES .)
+    PLUS_MAT        reduce using rule 16 (matrix -> ONES .)
+    MINUS_MAT       reduce using rule 16 (matrix -> ONES .)
+    TIMES_MAT       reduce using rule 16 (matrix -> ONES .)
+    DIVIDE_MAT      reduce using rule 16 (matrix -> ONES .)
+    EQ              reduce using rule 16 (matrix -> ONES .)
+    NE              reduce using rule 16 (matrix -> ONES .)
+    GT              reduce using rule 16 (matrix -> ONES .)
+    GE              reduce using rule 16 (matrix -> ONES .)
+    LT              reduce using rule 16 (matrix -> ONES .)
+    LE              reduce using rule 16 (matrix -> ONES .)
+    ;               reduce using rule 16 (matrix -> ONES .)
+    )               reduce using rule 16 (matrix -> ONES .)
+    ]               reduce using rule 16 (matrix -> ONES .)
 
 
 state 31
 
-    (24) statement -> IF ( expression ) . statement
-    (25) statement -> IF ( expression ) . code_block
-    (26) statement -> IF ( expression ) . statement else_block
-    (27) statement -> IF ( expression ) . code_block else_block
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
-    (20) code_block -> . { statements_list }
-    (21) code_block -> . { statement }
+    (33) statement -> ID ASSIGN expression . ;
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ID              shift and go to state 3
-    IF              shift and go to state 4
-    {               shift and go to state 36
+    ;               shift and go to state 60
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
-    statement                      shift and go to state 34
-    code_block                     shift and go to state 35
 
 state 32
 
-    (13) expression -> expression PLUS expression .
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (34) statement -> ID MINUS_ASSIGN expression . ;
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ;               reduce using rule 13 (expression -> expression PLUS expression .)
-    PLUS            reduce using rule 13 (expression -> expression PLUS expression .)
-    EQ              reduce using rule 13 (expression -> expression PLUS expression .)
-    )               reduce using rule 13 (expression -> expression PLUS expression .)
-
-  ! PLUS            [ shift and go to state 25 ]
-  ! EQ              [ shift and go to state 26 ]
+    ;               shift and go to state 61
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
 
 state 33
 
-    (14) expression -> expression EQ expression .
-    (13) expression -> expression . PLUS expression
-    (14) expression -> expression . EQ expression
+    (35) statement -> ID PLUS_ASSIGN expression . ;
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ;               reduce using rule 14 (expression -> expression EQ expression .)
-    EQ              reduce using rule 14 (expression -> expression EQ expression .)
-    )               reduce using rule 14 (expression -> expression EQ expression .)
-    PLUS            shift and go to state 25
-
-  ! PLUS            [ reduce using rule 14 (expression -> expression EQ expression .) ]
-  ! EQ              [ shift and go to state 26 ]
+    ;               shift and go to state 62
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
 
 state 34
 
-    (24) statement -> IF ( expression ) statement .
-    (26) statement -> IF ( expression ) statement . else_block
-    (28) else_block -> . ELSE statement
-    (29) else_block -> . ELSE code_block
+    (36) statement -> ID TIMES_ASSIGN expression . ;
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ID              reduce using rule 24 (statement -> IF ( expression ) statement .)
-    IF              reduce using rule 24 (statement -> IF ( expression ) statement .)
-    $end            reduce using rule 24 (statement -> IF ( expression ) statement .)
-    }               reduce using rule 24 (statement -> IF ( expression ) statement .)
-    ELSE            shift and go to state 38
+    ;               shift and go to state 63
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
-  ! ELSE            [ reduce using rule 24 (statement -> IF ( expression ) statement .) ]
-
-    else_block                     shift and go to state 37
 
 state 35
 
-    (25) statement -> IF ( expression ) code_block .
-    (27) statement -> IF ( expression ) code_block . else_block
-    (28) else_block -> . ELSE statement
-    (29) else_block -> . ELSE code_block
+    (37) statement -> ID DIVIDE_ASSIGN expression . ;
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ID              reduce using rule 25 (statement -> IF ( expression ) code_block .)
-    IF              reduce using rule 25 (statement -> IF ( expression ) code_block .)
-    $end            reduce using rule 25 (statement -> IF ( expression ) code_block .)
-    }               reduce using rule 25 (statement -> IF ( expression ) code_block .)
-    ELSE            shift and go to state 38
+    ;               shift and go to state 64
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
-  ! ELSE            [ reduce using rule 25 (statement -> IF ( expression ) code_block .) ]
-
-    else_block                     shift and go to state 39
 
 state 36
 
-    (20) code_block -> { . statements_list }
-    (21) code_block -> { . statement }
-    (22) statements_list -> . statements_list statement
-    (23) statements_list -> . statement statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (42) statement -> FOR ID EQ . range code_block
+    (43) statement -> FOR ID EQ . range statement
+    (17) range -> . INT : INT
 
-    ID              shift and go to state 3
-    IF              shift and go to state 4
+    INT             shift and go to state 66
 
-    statements_list                shift and go to state 40
-    statement                      shift and go to state 41
+    range                          shift and go to state 65
 
 state 37
 
-    (26) statement -> IF ( expression ) statement else_block .
+    (44) statement -> WHILE ( expression . ) code_block
+    (45) statement -> WHILE ( expression . ) statement
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ID              reduce using rule 26 (statement -> IF ( expression ) statement else_block .)
-    IF              reduce using rule 26 (statement -> IF ( expression ) statement else_block .)
-    $end            reduce using rule 26 (statement -> IF ( expression ) statement else_block .)
-    ELSE            reduce using rule 26 (statement -> IF ( expression ) statement else_block .)
-    }               reduce using rule 26 (statement -> IF ( expression ) statement else_block .)
+    )               shift and go to state 67
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
 
 state 38
 
-    (28) else_block -> ELSE . statement
-    (29) else_block -> ELSE . code_block
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
-    (20) code_block -> . { statements_list }
-    (21) code_block -> . { statement }
+    (46) statement -> IF ( expression . ) statement
+    (47) statement -> IF ( expression . ) code_block
+    (48) statement -> IF ( expression . ) statement else_block
+    (49) statement -> IF ( expression . ) code_block else_block
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
 
-    ID              shift and go to state 3
-    IF              shift and go to state 4
-    {               shift and go to state 36
+    )               shift and go to state 68
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
 
-    statement                      shift and go to state 42
-    code_block                     shift and go to state 43
 
 state 39
 
-    (27) statement -> IF ( expression ) code_block else_block .
+    (52) statement -> PRINT inner_vector ; .
 
-    ID              reduce using rule 27 (statement -> IF ( expression ) code_block else_block .)
-    IF              reduce using rule 27 (statement -> IF ( expression ) code_block else_block .)
-    $end            reduce using rule 27 (statement -> IF ( expression ) code_block else_block .)
-    ELSE            reduce using rule 27 (statement -> IF ( expression ) code_block else_block .)
-    }               reduce using rule 27 (statement -> IF ( expression ) code_block else_block .)
+    ID              reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    FOR             reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    WHILE           reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    IF              reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    PRINT           reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    $end            reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    ELSE            reduce using rule 52 (statement -> PRINT inner_vector ; .)
+    }               reduce using rule 52 (statement -> PRINT inner_vector ; .)
 
 
 state 40
 
-    (20) code_block -> { statements_list . }
-    (22) statements_list -> statements_list . statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (8) inner_vector -> inner_vector , . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    }               shift and go to state 44
-    ID              shift and go to state 3
-    IF              shift and go to state 4
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    statement                      shift and go to state 5
+    expression                     shift and go to state 69
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 41
 
-    (21) code_block -> { statement . }
-    (23) statements_list -> statement . statement
-    (15) statement -> . ID ASSIGN expression ;
-    (16) statement -> . ID MINUS_ASSIGN expression ;
-    (17) statement -> . ID PLUS_ASSIGN expression ;
-    (18) statement -> . ID TIMES_ASSIGN expression ;
-    (19) statement -> . ID DIVIDE_ASSIGN expression ;
-    (24) statement -> . IF ( expression ) statement
-    (25) statement -> . IF ( expression ) code_block
-    (26) statement -> . IF ( expression ) statement else_block
-    (27) statement -> . IF ( expression ) code_block else_block
+    (7) inner_vector -> expression , . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    }               shift and go to state 45
-    ID              shift and go to state 3
-    IF              shift and go to state 4
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
-    statement                      shift and go to state 6
+    expression                     shift and go to state 70
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 42
 
-    (28) else_block -> ELSE statement .
+    (18) expression -> expression PLUS . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ELSE            reduce using rule 28 (else_block -> ELSE statement .)
-    ID              reduce using rule 28 (else_block -> ELSE statement .)
-    IF              reduce using rule 28 (else_block -> ELSE statement .)
-    $end            reduce using rule 28 (else_block -> ELSE statement .)
-    }               reduce using rule 28 (else_block -> ELSE statement .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 71
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 43
 
-    (29) else_block -> ELSE code_block .
+    (19) expression -> expression MINUS . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ELSE            reduce using rule 29 (else_block -> ELSE code_block .)
-    ID              reduce using rule 29 (else_block -> ELSE code_block .)
-    IF              reduce using rule 29 (else_block -> ELSE code_block .)
-    $end            reduce using rule 29 (else_block -> ELSE code_block .)
-    }               reduce using rule 29 (else_block -> ELSE code_block .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 72
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 44
 
-    (20) code_block -> { statements_list } .
+    (20) expression -> expression TIMES . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ELSE            reduce using rule 20 (code_block -> { statements_list } .)
-    ID              reduce using rule 20 (code_block -> { statements_list } .)
-    IF              reduce using rule 20 (code_block -> { statements_list } .)
-    $end            reduce using rule 20 (code_block -> { statements_list } .)
-    }               reduce using rule 20 (code_block -> { statements_list } .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
 
+    expression                     shift and go to state 73
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
 
 state 45
 
-    (21) code_block -> { statement } .
+    (21) expression -> expression DIVIDE . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
 
-    ELSE            reduce using rule 21 (code_block -> { statement } .)
-    ID              reduce using rule 21 (code_block -> { statement } .)
-    IF              reduce using rule 21 (code_block -> { statement } .)
-    $end            reduce using rule 21 (code_block -> { statement } .)
-    }               reduce using rule 21 (code_block -> { statement } .)
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 74
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 46
+
+    (22) expression -> expression PLUS_MAT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 75
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 47
+
+    (23) expression -> expression MINUS_MAT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 76
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 48
+
+    (24) expression -> expression TIMES_MAT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 77
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 49
+
+    (25) expression -> expression DIVIDE_MAT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 78
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 50
+
+    (27) expression -> expression EQ . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 79
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 51
+
+    (28) expression -> expression NE . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 80
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 52
+
+    (29) expression -> expression GT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 81
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 53
+
+    (30) expression -> expression GE . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 82
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 54
+
+    (31) expression -> expression LT . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 83
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 55
+
+    (32) expression -> expression LE . expression
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 84
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 56
+
+    (26) expression -> MINUS expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 26 (expression -> MINUS expression .)
+    PLUS            reduce using rule 26 (expression -> MINUS expression .)
+    MINUS           reduce using rule 26 (expression -> MINUS expression .)
+    EQ              reduce using rule 26 (expression -> MINUS expression .)
+    NE              reduce using rule 26 (expression -> MINUS expression .)
+    GT              reduce using rule 26 (expression -> MINUS expression .)
+    GE              reduce using rule 26 (expression -> MINUS expression .)
+    LT              reduce using rule 26 (expression -> MINUS expression .)
+    LE              reduce using rule 26 (expression -> MINUS expression .)
+    ;               reduce using rule 26 (expression -> MINUS expression .)
+    )               reduce using rule 26 (expression -> MINUS expression .)
+    ]               reduce using rule 26 (expression -> MINUS expression .)
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! TIMES           [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! PLUS_MAT        [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! MINUS_MAT       [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! TIMES_MAT       [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 26 (expression -> MINUS expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 57
+
+    (9) vector -> [ . expression ]
+    (10) vector -> [ . inner_vector ]
+    (3) expression -> . ID
+    (4) expression -> . number
+    (5) expression -> . STRING
+    (6) expression -> . matrix
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression TIMES expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . expression PLUS_MAT expression
+    (23) expression -> . expression MINUS_MAT expression
+    (24) expression -> . expression TIMES_MAT expression
+    (25) expression -> . expression DIVIDE_MAT expression
+    (26) expression -> . MINUS expression
+    (27) expression -> . expression EQ expression
+    (28) expression -> . expression NE expression
+    (29) expression -> . expression GT expression
+    (30) expression -> . expression GE expression
+    (31) expression -> . expression LT expression
+    (32) expression -> . expression LE expression
+    (7) inner_vector -> . expression , expression
+    (8) inner_vector -> . inner_vector , expression
+    (1) number -> . INT
+    (2) number -> . FLOAT
+    (13) matrix -> . [ inner_matrix ]
+    (14) matrix -> . ZEROS
+    (15) matrix -> . EYE
+    (16) matrix -> . ONES
+
+    ID              shift and go to state 20
+    STRING          shift and go to state 22
+    MINUS           shift and go to state 24
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    [               shift and go to state 27
+    ZEROS           shift and go to state 28
+    EYE             shift and go to state 29
+    ONES            shift and go to state 30
+
+    expression                     shift and go to state 85
+    inner_vector                   shift and go to state 86
+    number                         shift and go to state 21
+    matrix                         shift and go to state 23
+
+state 58
+
+    (13) matrix -> [ inner_matrix . ]
+    (12) inner_matrix -> inner_matrix . , vector
+
+    ]               shift and go to state 87
+    ,               shift and go to state 88
+
+
+state 59
+
+    (11) inner_matrix -> vector .
+
+    ]               reduce using rule 11 (inner_matrix -> vector .)
+    ,               reduce using rule 11 (inner_matrix -> vector .)
+
+
+state 60
+
+    (33) statement -> ID ASSIGN expression ; .
+
+    ID              reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    FOR             reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    WHILE           reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    IF              reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    PRINT           reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    $end            reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    ELSE            reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+    }               reduce using rule 33 (statement -> ID ASSIGN expression ; .)
+
+
+state 61
+
+    (34) statement -> ID MINUS_ASSIGN expression ; .
+
+    ID              reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    FOR             reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    WHILE           reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    IF              reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    PRINT           reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    $end            reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    ELSE            reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+    }               reduce using rule 34 (statement -> ID MINUS_ASSIGN expression ; .)
+
+
+state 62
+
+    (35) statement -> ID PLUS_ASSIGN expression ; .
+
+    ID              reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    FOR             reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    WHILE           reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    IF              reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    PRINT           reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    $end            reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    ELSE            reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+    }               reduce using rule 35 (statement -> ID PLUS_ASSIGN expression ; .)
+
+
+state 63
+
+    (36) statement -> ID TIMES_ASSIGN expression ; .
+
+    ID              reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    FOR             reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    WHILE           reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    IF              reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    PRINT           reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    $end            reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    ELSE            reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+    }               reduce using rule 36 (statement -> ID TIMES_ASSIGN expression ; .)
+
+
+state 64
+
+    (37) statement -> ID DIVIDE_ASSIGN expression ; .
+
+    ID              reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    FOR             reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    WHILE           reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    IF              reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    PRINT           reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    $end            reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    ELSE            reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+    }               reduce using rule 37 (statement -> ID DIVIDE_ASSIGN expression ; .)
+
+
+state 65
+
+    (42) statement -> FOR ID EQ range . code_block
+    (43) statement -> FOR ID EQ range . statement
+    (38) code_block -> . { statements_list }
+    (39) code_block -> . { statement }
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+
+    {               shift and go to state 91
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+
+    code_block                     shift and go to state 89
+    statement                      shift and go to state 90
+
+state 66
+
+    (17) range -> INT . : INT
+
+    :               shift and go to state 92
+
+
+state 67
+
+    (44) statement -> WHILE ( expression ) . code_block
+    (45) statement -> WHILE ( expression ) . statement
+    (38) code_block -> . { statements_list }
+    (39) code_block -> . { statement }
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+
+    {               shift and go to state 91
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+
+    code_block                     shift and go to state 93
+    statement                      shift and go to state 94
+
+state 68
+
+    (46) statement -> IF ( expression ) . statement
+    (47) statement -> IF ( expression ) . code_block
+    (48) statement -> IF ( expression ) . statement else_block
+    (49) statement -> IF ( expression ) . code_block else_block
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+    (38) code_block -> . { statements_list }
+    (39) code_block -> . { statement }
+
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+    {               shift and go to state 91
+
+    statement                      shift and go to state 95
+    code_block                     shift and go to state 96
+
+state 69
+
+    (8) inner_vector -> inner_vector , expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ;               reduce using rule 8 (inner_vector -> inner_vector , expression .)
+    ,               reduce using rule 8 (inner_vector -> inner_vector , expression .)
+    ]               reduce using rule 8 (inner_vector -> inner_vector , expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
+
+
+state 70
+
+    (7) inner_vector -> expression , expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ;               reduce using rule 7 (inner_vector -> expression , expression .)
+    ,               reduce using rule 7 (inner_vector -> expression , expression .)
+    ]               reduce using rule 7 (inner_vector -> expression , expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
+
+
+state 71
+
+    (18) expression -> expression PLUS expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 18 (expression -> expression PLUS expression .)
+    PLUS            reduce using rule 18 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 18 (expression -> expression PLUS expression .)
+    EQ              reduce using rule 18 (expression -> expression PLUS expression .)
+    NE              reduce using rule 18 (expression -> expression PLUS expression .)
+    GT              reduce using rule 18 (expression -> expression PLUS expression .)
+    GE              reduce using rule 18 (expression -> expression PLUS expression .)
+    LT              reduce using rule 18 (expression -> expression PLUS expression .)
+    LE              reduce using rule 18 (expression -> expression PLUS expression .)
+    ;               reduce using rule 18 (expression -> expression PLUS expression .)
+    )               reduce using rule 18 (expression -> expression PLUS expression .)
+    ]               reduce using rule 18 (expression -> expression PLUS expression .)
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! TIMES           [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! PLUS_MAT        [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! MINUS_MAT       [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! TIMES_MAT       [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 72
+
+    (19) expression -> expression MINUS expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 19 (expression -> expression MINUS expression .)
+    PLUS            reduce using rule 19 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 19 (expression -> expression MINUS expression .)
+    EQ              reduce using rule 19 (expression -> expression MINUS expression .)
+    NE              reduce using rule 19 (expression -> expression MINUS expression .)
+    GT              reduce using rule 19 (expression -> expression MINUS expression .)
+    GE              reduce using rule 19 (expression -> expression MINUS expression .)
+    LT              reduce using rule 19 (expression -> expression MINUS expression .)
+    LE              reduce using rule 19 (expression -> expression MINUS expression .)
+    ;               reduce using rule 19 (expression -> expression MINUS expression .)
+    )               reduce using rule 19 (expression -> expression MINUS expression .)
+    ]               reduce using rule 19 (expression -> expression MINUS expression .)
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! TIMES           [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! PLUS_MAT        [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! MINUS_MAT       [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! TIMES_MAT       [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 73
+
+    (20) expression -> expression TIMES expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 20 (expression -> expression TIMES expression .)
+    PLUS            reduce using rule 20 (expression -> expression TIMES expression .)
+    MINUS           reduce using rule 20 (expression -> expression TIMES expression .)
+    TIMES           reduce using rule 20 (expression -> expression TIMES expression .)
+    DIVIDE          reduce using rule 20 (expression -> expression TIMES expression .)
+    EQ              reduce using rule 20 (expression -> expression TIMES expression .)
+    NE              reduce using rule 20 (expression -> expression TIMES expression .)
+    GT              reduce using rule 20 (expression -> expression TIMES expression .)
+    GE              reduce using rule 20 (expression -> expression TIMES expression .)
+    LT              reduce using rule 20 (expression -> expression TIMES expression .)
+    LE              reduce using rule 20 (expression -> expression TIMES expression .)
+    ;               reduce using rule 20 (expression -> expression TIMES expression .)
+    )               reduce using rule 20 (expression -> expression TIMES expression .)
+    ]               reduce using rule 20 (expression -> expression TIMES expression .)
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS_MAT        [ reduce using rule 20 (expression -> expression TIMES expression .) ]
+  ! MINUS_MAT       [ reduce using rule 20 (expression -> expression TIMES expression .) ]
+  ! TIMES_MAT       [ reduce using rule 20 (expression -> expression TIMES expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 20 (expression -> expression TIMES expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 74
+
+    (21) expression -> expression DIVIDE expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 21 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 21 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 21 (expression -> expression DIVIDE expression .)
+    TIMES           reduce using rule 21 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 21 (expression -> expression DIVIDE expression .)
+    EQ              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    NE              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    GT              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    GE              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    LT              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    LE              reduce using rule 21 (expression -> expression DIVIDE expression .)
+    ;               reduce using rule 21 (expression -> expression DIVIDE expression .)
+    )               reduce using rule 21 (expression -> expression DIVIDE expression .)
+    ]               reduce using rule 21 (expression -> expression DIVIDE expression .)
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS_MAT        [ reduce using rule 21 (expression -> expression DIVIDE expression .) ]
+  ! MINUS_MAT       [ reduce using rule 21 (expression -> expression DIVIDE expression .) ]
+  ! TIMES_MAT       [ reduce using rule 21 (expression -> expression DIVIDE expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 21 (expression -> expression DIVIDE expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 75
+
+    (22) expression -> expression PLUS_MAT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    PLUS            reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    MINUS           reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    TIMES           reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    DIVIDE          reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    PLUS_MAT        reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    MINUS_MAT       reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    EQ              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    NE              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    GT              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    GE              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    LT              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    LE              reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    ;               reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    )               reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    ]               reduce using rule 22 (expression -> expression PLUS_MAT expression .)
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! TIMES_MAT       [ reduce using rule 22 (expression -> expression PLUS_MAT expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 22 (expression -> expression PLUS_MAT expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! PLUS_MAT        [ shift and go to state 46 ]
+  ! MINUS_MAT       [ shift and go to state 47 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 76
+
+    (23) expression -> expression MINUS_MAT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    PLUS            reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    MINUS           reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    TIMES           reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    DIVIDE          reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    PLUS_MAT        reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    MINUS_MAT       reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    EQ              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    NE              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    GT              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    GE              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    LT              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    LE              reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    ;               reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    )               reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    ]               reduce using rule 23 (expression -> expression MINUS_MAT expression .)
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! TIMES_MAT       [ reduce using rule 23 (expression -> expression MINUS_MAT expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 23 (expression -> expression MINUS_MAT expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! PLUS_MAT        [ shift and go to state 46 ]
+  ! MINUS_MAT       [ shift and go to state 47 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 77
+
+    (24) expression -> expression TIMES_MAT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    PLUS            reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    MINUS           reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    TIMES           reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    DIVIDE          reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    PLUS_MAT        reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    MINUS_MAT       reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    TIMES_MAT       reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    DIVIDE_MAT      reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    EQ              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    NE              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    GT              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    GE              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    LT              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    LE              reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    ;               reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    )               reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+    ]               reduce using rule 24 (expression -> expression TIMES_MAT expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! PLUS_MAT        [ shift and go to state 46 ]
+  ! MINUS_MAT       [ shift and go to state 47 ]
+  ! TIMES_MAT       [ shift and go to state 48 ]
+  ! DIVIDE_MAT      [ shift and go to state 49 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 78
+
+    (25) expression -> expression DIVIDE_MAT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    PLUS            reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    MINUS           reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    TIMES           reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    DIVIDE          reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    PLUS_MAT        reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    MINUS_MAT       reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    TIMES_MAT       reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    DIVIDE_MAT      reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    EQ              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    NE              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    GT              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    GE              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    LT              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    LE              reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    ;               reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    )               reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+    ]               reduce using rule 25 (expression -> expression DIVIDE_MAT expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! PLUS_MAT        [ shift and go to state 46 ]
+  ! MINUS_MAT       [ shift and go to state 47 ]
+  ! TIMES_MAT       [ shift and go to state 48 ]
+  ! DIVIDE_MAT      [ shift and go to state 49 ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 79
+
+    (27) expression -> expression EQ expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 27 (expression -> expression EQ expression .)
+    EQ              reduce using rule 27 (expression -> expression EQ expression .)
+    NE              reduce using rule 27 (expression -> expression EQ expression .)
+    GT              reduce using rule 27 (expression -> expression EQ expression .)
+    GE              reduce using rule 27 (expression -> expression EQ expression .)
+    LT              reduce using rule 27 (expression -> expression EQ expression .)
+    LE              reduce using rule 27 (expression -> expression EQ expression .)
+    ;               reduce using rule 27 (expression -> expression EQ expression .)
+    )               reduce using rule 27 (expression -> expression EQ expression .)
+    ]               reduce using rule 27 (expression -> expression EQ expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! MINUS           [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! TIMES           [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! DIVIDE          [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! PLUS_MAT        [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! MINUS_MAT       [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! TIMES_MAT       [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 27 (expression -> expression EQ expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 80
+
+    (28) expression -> expression NE expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 28 (expression -> expression NE expression .)
+    EQ              reduce using rule 28 (expression -> expression NE expression .)
+    NE              reduce using rule 28 (expression -> expression NE expression .)
+    GT              reduce using rule 28 (expression -> expression NE expression .)
+    GE              reduce using rule 28 (expression -> expression NE expression .)
+    LT              reduce using rule 28 (expression -> expression NE expression .)
+    LE              reduce using rule 28 (expression -> expression NE expression .)
+    ;               reduce using rule 28 (expression -> expression NE expression .)
+    )               reduce using rule 28 (expression -> expression NE expression .)
+    ]               reduce using rule 28 (expression -> expression NE expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! MINUS           [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! TIMES           [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! DIVIDE          [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! PLUS_MAT        [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! MINUS_MAT       [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! TIMES_MAT       [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 28 (expression -> expression NE expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 81
+
+    (29) expression -> expression GT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 29 (expression -> expression GT expression .)
+    EQ              reduce using rule 29 (expression -> expression GT expression .)
+    NE              reduce using rule 29 (expression -> expression GT expression .)
+    GT              reduce using rule 29 (expression -> expression GT expression .)
+    GE              reduce using rule 29 (expression -> expression GT expression .)
+    LT              reduce using rule 29 (expression -> expression GT expression .)
+    LE              reduce using rule 29 (expression -> expression GT expression .)
+    ;               reduce using rule 29 (expression -> expression GT expression .)
+    )               reduce using rule 29 (expression -> expression GT expression .)
+    ]               reduce using rule 29 (expression -> expression GT expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! MINUS           [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! TIMES           [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! DIVIDE          [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! PLUS_MAT        [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! MINUS_MAT       [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! TIMES_MAT       [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 29 (expression -> expression GT expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 82
+
+    (30) expression -> expression GE expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 30 (expression -> expression GE expression .)
+    EQ              reduce using rule 30 (expression -> expression GE expression .)
+    NE              reduce using rule 30 (expression -> expression GE expression .)
+    GT              reduce using rule 30 (expression -> expression GE expression .)
+    GE              reduce using rule 30 (expression -> expression GE expression .)
+    LT              reduce using rule 30 (expression -> expression GE expression .)
+    LE              reduce using rule 30 (expression -> expression GE expression .)
+    ;               reduce using rule 30 (expression -> expression GE expression .)
+    )               reduce using rule 30 (expression -> expression GE expression .)
+    ]               reduce using rule 30 (expression -> expression GE expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! MINUS           [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! TIMES           [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! DIVIDE          [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! PLUS_MAT        [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! MINUS_MAT       [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! TIMES_MAT       [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 30 (expression -> expression GE expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 83
+
+    (31) expression -> expression LT expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 31 (expression -> expression LT expression .)
+    EQ              reduce using rule 31 (expression -> expression LT expression .)
+    NE              reduce using rule 31 (expression -> expression LT expression .)
+    GT              reduce using rule 31 (expression -> expression LT expression .)
+    GE              reduce using rule 31 (expression -> expression LT expression .)
+    LT              reduce using rule 31 (expression -> expression LT expression .)
+    LE              reduce using rule 31 (expression -> expression LT expression .)
+    ;               reduce using rule 31 (expression -> expression LT expression .)
+    )               reduce using rule 31 (expression -> expression LT expression .)
+    ]               reduce using rule 31 (expression -> expression LT expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! MINUS           [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! TIMES           [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! DIVIDE          [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! PLUS_MAT        [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! MINUS_MAT       [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! TIMES_MAT       [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 31 (expression -> expression LT expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 84
+
+    (32) expression -> expression LE expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+
+    ,               reduce using rule 32 (expression -> expression LE expression .)
+    EQ              reduce using rule 32 (expression -> expression LE expression .)
+    NE              reduce using rule 32 (expression -> expression LE expression .)
+    GT              reduce using rule 32 (expression -> expression LE expression .)
+    GE              reduce using rule 32 (expression -> expression LE expression .)
+    LT              reduce using rule 32 (expression -> expression LE expression .)
+    LE              reduce using rule 32 (expression -> expression LE expression .)
+    ;               reduce using rule 32 (expression -> expression LE expression .)
+    )               reduce using rule 32 (expression -> expression LE expression .)
+    ]               reduce using rule 32 (expression -> expression LE expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+
+  ! PLUS            [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! MINUS           [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! TIMES           [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! DIVIDE          [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! PLUS_MAT        [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! MINUS_MAT       [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! TIMES_MAT       [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! DIVIDE_MAT      [ reduce using rule 32 (expression -> expression LE expression .) ]
+  ! EQ              [ shift and go to state 50 ]
+  ! NE              [ shift and go to state 51 ]
+  ! GT              [ shift and go to state 52 ]
+  ! GE              [ shift and go to state 53 ]
+  ! LT              [ shift and go to state 54 ]
+  ! LE              [ shift and go to state 55 ]
+
+
+state 85
+
+    (9) vector -> [ expression . ]
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . TIMES expression
+    (21) expression -> expression . DIVIDE expression
+    (22) expression -> expression . PLUS_MAT expression
+    (23) expression -> expression . MINUS_MAT expression
+    (24) expression -> expression . TIMES_MAT expression
+    (25) expression -> expression . DIVIDE_MAT expression
+    (27) expression -> expression . EQ expression
+    (28) expression -> expression . NE expression
+    (29) expression -> expression . GT expression
+    (30) expression -> expression . GE expression
+    (31) expression -> expression . LT expression
+    (32) expression -> expression . LE expression
+    (7) inner_vector -> expression . , expression
+
+    ]               shift and go to state 97
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    PLUS_MAT        shift and go to state 46
+    MINUS_MAT       shift and go to state 47
+    TIMES_MAT       shift and go to state 48
+    DIVIDE_MAT      shift and go to state 49
+    EQ              shift and go to state 50
+    NE              shift and go to state 51
+    GT              shift and go to state 52
+    GE              shift and go to state 53
+    LT              shift and go to state 54
+    LE              shift and go to state 55
+    ,               shift and go to state 41
+
+
+state 86
+
+    (10) vector -> [ inner_vector . ]
+    (8) inner_vector -> inner_vector . , expression
+
+    ]               shift and go to state 98
+    ,               shift and go to state 40
+
+
+state 87
+
+    (13) matrix -> [ inner_matrix ] .
+
+    ,               reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    PLUS            reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    MINUS           reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    TIMES           reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    DIVIDE          reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    PLUS_MAT        reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    MINUS_MAT       reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    TIMES_MAT       reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    DIVIDE_MAT      reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    EQ              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    NE              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    GT              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    GE              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    LT              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    LE              reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    ;               reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    )               reduce using rule 13 (matrix -> [ inner_matrix ] .)
+    ]               reduce using rule 13 (matrix -> [ inner_matrix ] .)
+
+
+state 88
+
+    (12) inner_matrix -> inner_matrix , . vector
+    (9) vector -> . [ expression ]
+    (10) vector -> . [ inner_vector ]
+
+    [               shift and go to state 57
+
+    vector                         shift and go to state 99
+
+state 89
+
+    (42) statement -> FOR ID EQ range code_block .
+
+    ID              reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    FOR             reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    WHILE           reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    IF              reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    PRINT           reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    $end            reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    ELSE            reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+    }               reduce using rule 42 (statement -> FOR ID EQ range code_block .)
+
+
+state 90
+
+    (43) statement -> FOR ID EQ range statement .
+
+    ID              reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    FOR             reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    WHILE           reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    IF              reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    PRINT           reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    $end            reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    ELSE            reduce using rule 43 (statement -> FOR ID EQ range statement .)
+    }               reduce using rule 43 (statement -> FOR ID EQ range statement .)
+
+
+state 91
+
+    (38) code_block -> { . statements_list }
+    (39) code_block -> { . statement }
+    (40) statements_list -> . statements_list statement
+    (41) statements_list -> . statement statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+
+    statements_list                shift and go to state 100
+    statement                      shift and go to state 101
+
+state 92
+
+    (17) range -> INT : . INT
+
+    INT             shift and go to state 102
+
+
+state 93
+
+    (44) statement -> WHILE ( expression ) code_block .
+
+    ID              reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    FOR             reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    WHILE           reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    IF              reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    PRINT           reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    $end            reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    ELSE            reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+    }               reduce using rule 44 (statement -> WHILE ( expression ) code_block .)
+
+
+state 94
+
+    (45) statement -> WHILE ( expression ) statement .
+
+    ID              reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    FOR             reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    WHILE           reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    IF              reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    PRINT           reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    $end            reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    ELSE            reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+    }               reduce using rule 45 (statement -> WHILE ( expression ) statement .)
+
+
+state 95
+
+    (46) statement -> IF ( expression ) statement .
+    (48) statement -> IF ( expression ) statement . else_block
+    (50) else_block -> . ELSE statement
+    (51) else_block -> . ELSE code_block
+
+    ID              reduce using rule 46 (statement -> IF ( expression ) statement .)
+    FOR             reduce using rule 46 (statement -> IF ( expression ) statement .)
+    WHILE           reduce using rule 46 (statement -> IF ( expression ) statement .)
+    IF              reduce using rule 46 (statement -> IF ( expression ) statement .)
+    PRINT           reduce using rule 46 (statement -> IF ( expression ) statement .)
+    $end            reduce using rule 46 (statement -> IF ( expression ) statement .)
+    }               reduce using rule 46 (statement -> IF ( expression ) statement .)
+    ELSE            shift and go to state 104
+
+  ! ELSE            [ reduce using rule 46 (statement -> IF ( expression ) statement .) ]
+
+    else_block                     shift and go to state 103
+
+state 96
+
+    (47) statement -> IF ( expression ) code_block .
+    (49) statement -> IF ( expression ) code_block . else_block
+    (50) else_block -> . ELSE statement
+    (51) else_block -> . ELSE code_block
+
+    ID              reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    FOR             reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    WHILE           reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    IF              reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    PRINT           reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    $end            reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    }               reduce using rule 47 (statement -> IF ( expression ) code_block .)
+    ELSE            shift and go to state 104
+
+  ! ELSE            [ reduce using rule 47 (statement -> IF ( expression ) code_block .) ]
+
+    else_block                     shift and go to state 105
+
+state 97
+
+    (9) vector -> [ expression ] .
+
+    ]               reduce using rule 9 (vector -> [ expression ] .)
+    ,               reduce using rule 9 (vector -> [ expression ] .)
+
+
+state 98
+
+    (10) vector -> [ inner_vector ] .
+
+    ]               reduce using rule 10 (vector -> [ inner_vector ] .)
+    ,               reduce using rule 10 (vector -> [ inner_vector ] .)
+
+
+state 99
+
+    (12) inner_matrix -> inner_matrix , vector .
+
+    ]               reduce using rule 12 (inner_matrix -> inner_matrix , vector .)
+    ,               reduce using rule 12 (inner_matrix -> inner_matrix , vector .)
+
+
+state 100
+
+    (38) code_block -> { statements_list . }
+    (40) statements_list -> statements_list . statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+
+    }               shift and go to state 106
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+
+    statement                      shift and go to state 8
+
+state 101
+
+    (39) code_block -> { statement . }
+    (41) statements_list -> statement . statement
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+
+    }               shift and go to state 107
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+
+    statement                      shift and go to state 9
+
+state 102
+
+    (17) range -> INT : INT .
+
+    {               reduce using rule 17 (range -> INT : INT .)
+    ID              reduce using rule 17 (range -> INT : INT .)
+    FOR             reduce using rule 17 (range -> INT : INT .)
+    WHILE           reduce using rule 17 (range -> INT : INT .)
+    IF              reduce using rule 17 (range -> INT : INT .)
+    PRINT           reduce using rule 17 (range -> INT : INT .)
+
+
+state 103
+
+    (48) statement -> IF ( expression ) statement else_block .
+
+    ID              reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    FOR             reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    WHILE           reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    IF              reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    PRINT           reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    $end            reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    ELSE            reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+    }               reduce using rule 48 (statement -> IF ( expression ) statement else_block .)
+
+
+state 104
+
+    (50) else_block -> ELSE . statement
+    (51) else_block -> ELSE . code_block
+    (33) statement -> . ID ASSIGN expression ;
+    (34) statement -> . ID MINUS_ASSIGN expression ;
+    (35) statement -> . ID PLUS_ASSIGN expression ;
+    (36) statement -> . ID TIMES_ASSIGN expression ;
+    (37) statement -> . ID DIVIDE_ASSIGN expression ;
+    (42) statement -> . FOR ID EQ range code_block
+    (43) statement -> . FOR ID EQ range statement
+    (44) statement -> . WHILE ( expression ) code_block
+    (45) statement -> . WHILE ( expression ) statement
+    (46) statement -> . IF ( expression ) statement
+    (47) statement -> . IF ( expression ) code_block
+    (48) statement -> . IF ( expression ) statement else_block
+    (49) statement -> . IF ( expression ) code_block else_block
+    (52) statement -> . PRINT inner_vector ;
+    (38) code_block -> . { statements_list }
+    (39) code_block -> . { statement }
+
+    ID              shift and go to state 3
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 5
+    IF              shift and go to state 6
+    PRINT           shift and go to state 7
+    {               shift and go to state 91
+
+    statement                      shift and go to state 108
+    code_block                     shift and go to state 109
+
+state 105
+
+    (49) statement -> IF ( expression ) code_block else_block .
+
+    ID              reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    FOR             reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    WHILE           reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    IF              reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    PRINT           reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    $end            reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    ELSE            reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+    }               reduce using rule 49 (statement -> IF ( expression ) code_block else_block .)
+
+
+state 106
+
+    (38) code_block -> { statements_list } .
+
+    ID              reduce using rule 38 (code_block -> { statements_list } .)
+    FOR             reduce using rule 38 (code_block -> { statements_list } .)
+    WHILE           reduce using rule 38 (code_block -> { statements_list } .)
+    IF              reduce using rule 38 (code_block -> { statements_list } .)
+    PRINT           reduce using rule 38 (code_block -> { statements_list } .)
+    $end            reduce using rule 38 (code_block -> { statements_list } .)
+    ELSE            reduce using rule 38 (code_block -> { statements_list } .)
+    }               reduce using rule 38 (code_block -> { statements_list } .)
+
+
+state 107
+
+    (39) code_block -> { statement } .
+
+    ID              reduce using rule 39 (code_block -> { statement } .)
+    FOR             reduce using rule 39 (code_block -> { statement } .)
+    WHILE           reduce using rule 39 (code_block -> { statement } .)
+    IF              reduce using rule 39 (code_block -> { statement } .)
+    PRINT           reduce using rule 39 (code_block -> { statement } .)
+    $end            reduce using rule 39 (code_block -> { statement } .)
+    ELSE            reduce using rule 39 (code_block -> { statement } .)
+    }               reduce using rule 39 (code_block -> { statement } .)
+
+
+state 108
+
+    (50) else_block -> ELSE statement .
+
+    ID              reduce using rule 50 (else_block -> ELSE statement .)
+    FOR             reduce using rule 50 (else_block -> ELSE statement .)
+    WHILE           reduce using rule 50 (else_block -> ELSE statement .)
+    IF              reduce using rule 50 (else_block -> ELSE statement .)
+    PRINT           reduce using rule 50 (else_block -> ELSE statement .)
+    $end            reduce using rule 50 (else_block -> ELSE statement .)
+    ELSE            reduce using rule 50 (else_block -> ELSE statement .)
+    }               reduce using rule 50 (else_block -> ELSE statement .)
+
+
+state 109
+
+    (51) else_block -> ELSE code_block .
+
+    ID              reduce using rule 51 (else_block -> ELSE code_block .)
+    FOR             reduce using rule 51 (else_block -> ELSE code_block .)
+    WHILE           reduce using rule 51 (else_block -> ELSE code_block .)
+    IF              reduce using rule 51 (else_block -> ELSE code_block .)
+    PRINT           reduce using rule 51 (else_block -> ELSE code_block .)
+    $end            reduce using rule 51 (else_block -> ELSE code_block .)
+    ELSE            reduce using rule 51 (else_block -> ELSE code_block .)
+    }               reduce using rule 51 (else_block -> ELSE code_block .)
 
