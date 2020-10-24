@@ -1,6 +1,6 @@
 from ply import lex
 
-reserved = {word: word.upper() for word in 'if then for while break continue return eye zeros ones print'.split()}
+reserved = {word: word.upper() for word in 'if else for while break continue return eye zeros ones print'.split()}
 
 
 tokens = ['PLUS',  'MINUS',  'TIMES',  'DIVIDE',
