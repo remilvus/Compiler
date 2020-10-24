@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "ASSIGN BREAK COMMENT CONTINUE DIVIDE DIVIDE_ASSIGN DIVIDE_MAT EQ EYE FLOAT FOR GE GT ID IF INT LE LT MINUS MINUS_ASSIGN MINUS_MAT NE ONES PLUS PLUS_ASSIGN PLUS_MAT PRINT RETURN STRING THEN TIMES TIMES_ASSIGN TIMES_MAT WHILE ZEROSterm : INTterm : term PLUS term\n                  | term MINUS term\n                  | term '' term\n                  | term '/' term"
+_lr_signature = "statements_listnonassocJUST_IFnonassocELSEnonassocASSIGNMINUS_ASSIGNPLUS_ASSIGNTIMES_ASSIGNDIVIDE_ASSIGNleftEQleftPLUSMINUSleftTIMESDIVIDEASSIGN DIVIDE DIVIDE_ASSIGN ELSE EQ FLOAT ID IF INT MINUS MINUS_ASSIGN PLUS PLUS_ASSIGN STRING TIMES TIMES_ASSIGNnumber : INT\n              | FLOATexpression : ID\n                  | number\n                  | STRINGinner_vector : expression ',' expression\n                    | inner_vector ',' expression\n        vector      : '[' expression ']'\n                    | '[' inner_vector ']' inner_matrix : vector\n                    | inner_matrix ',' vector\n       matrix       : '[' inner_matrix ']' expression : expression PLUS expressionexpression : expression EQ expressionstatement : ID ASSIGN expression ';'\n                 | ID MINUS_ASSIGN expression ';'\n                 | ID PLUS_ASSIGN expression ';'\n                 | ID TIMES_ASSIGN expression ';'\n                 | ID DIVIDE_ASSIGN expression ';' code_block      : '{' statements_list '}'\n                       | '{' statement '}'\n       statements_list : statements_list statement\n                       | statement statementstatement : IF '(' expression ')' statement %prec JUST_IF\n                 | IF '(' expression ')' code_block %prec JUST_IF\n                 | IF '(' expression ')' statement else_block\n                 | IF '(' expression ')' code_block else_block\n       else_block : ELSE statement\n                  | ELSE code_block"
     
-_lr_action_items = {'INT':([0,3,4,5,6,],[2,2,2,2,2,]),'$end':([1,2,7,8,9,10,],[0,-1,-2,-3,-4,-5,]),'PLUS':([1,2,7,8,9,10,],[3,-1,3,3,3,3,]),'MINUS':([1,2,7,8,9,10,],[4,-1,4,4,4,4,]),'':([1,2,7,8,9,10,],[5,-1,5,5,5,5,]),'/':([1,2,7,8,9,10,],[6,-1,6,6,6,6,]),}
+_lr_action_items = {'ID':([0,1,2,5,6,7,8,9,10,11,12,24,25,26,27,28,29,30,31,34,35,36,37,38,39,40,41,42,43,44,45,],[3,3,3,-22,-23,13,13,13,13,13,13,-15,13,13,-16,-17,-18,-19,3,-24,-25,3,-26,3,-27,3,3,-28,-29,-20,-21,]),'IF':([0,1,2,5,6,24,27,28,29,30,31,34,35,36,37,38,39,40,41,42,43,44,45,],[4,4,4,-22,-23,-15,-16,-17,-18,-19,4,-24,-25,4,-26,4,-27,4,4,-28,-29,-20,-21,]),'$end':([1,5,6,24,27,28,29,30,34,35,37,39,42,43,44,45,],[0,-22,-23,-15,-16,-17,-18,-19,-24,-25,-26,-27,-28,-29,-20,-21,]),'ASSIGN':([3,],[7,]),'MINUS_ASSIGN':([3,],[8,]),'PLUS_ASSIGN':([3,],[9,]),'TIMES_ASSIGN':([3,],[10,]),'DIVIDE_ASSIGN':([3,],[11,]),'(':([4,],[12,]),'}':([5,6,24,27,28,29,30,34,35,37,39,40,41,42,43,44,45,],[-22,-23,-15,-16,-17,-18,-19,-24,-25,-26,-27,44,45,-28,-29,-20,-21,]),'STRING':([7,8,9,10,11,12,25,26,],[16,16,16,16,16,16,16,16,]),'INT':([7,8,9,10,11,12,25,26,],[17,17,17,17,17,17,17,17,]),'FLOAT':([7,8,9,10,11,12,25,26,],[18,18,18,18,18,18,18,18,]),';':([13,14,15,16,17,18,19,20,21,22,32,33,],[-3,24,-4,-5,-1,-2,27,28,29,30,-13,-14,]),'PLUS':([13,14,15,16,17,18,19,20,21,22,23,32,33,],[-3,25,-4,-5,-1,-2,25,25,25,25,25,-13,25,]),'EQ':([13,14,15,16,17,18,19,20,21,22,23,32,33,],[-3,26,-4,-5,-1,-2,26,26,26,26,26,-13,-14,]),')':([13,15,16,17,18,23,32,33,],[-3,-4,-5,-1,-2,31,-13,-14,]),'ELSE':([24,27,28,29,30,34,35,37,39,42,43,44,45,],[-15,-16,-17,-18,-19,38,38,-26,-27,-28,-29,-20,-21,]),'{':([31,38,],[36,36,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'term':([0,3,4,5,6,],[1,7,8,9,10,]),}
+_lr_goto_items = {'statements_list':([0,36,],[1,40,]),'statement':([0,1,2,31,36,38,40,41,],[2,5,6,34,41,42,5,6,]),'expression':([7,8,9,10,11,12,25,26,],[14,19,20,21,22,23,32,33,]),'number':([7,8,9,10,11,12,25,26,],[15,15,15,15,15,15,15,15,]),'code_block':([31,38,],[35,43,]),'else_block':([34,35,],[37,39,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,10 +26,34 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> term","S'",1,None,None,None),
-  ('term -> INT','term',1,'p_term','parser.py',7),
-  ('term -> term PLUS term','term',3,'p_binary_operators','parser.py',12),
-  ('term -> term MINUS term','term',3,'p_binary_operators','parser.py',13),
-  ('term -> term  term','term',3,'p_binary_operators','parser.py',14),
-  ('term -> term / term','term',3,'p_binary_operators','parser.py',15),
+  ("S' -> statements_list","S'",1,None,None,None),
+  ('number -> INT','number',1,'p_number','parser.py',16),
+  ('number -> FLOAT','number',1,'p_number','parser.py',17),
+  ('expression -> ID','expression',1,'p_expression','parser.py',21),
+  ('expression -> number','expression',1,'p_expression','parser.py',22),
+  ('expression -> STRING','expression',1,'p_expression','parser.py',23),
+  ('inner_vector -> expression , expression','inner_vector',3,'p_vector','parser.py',27),
+  ('inner_vector -> inner_vector , expression','inner_vector',3,'p_vector','parser.py',28),
+  ('vector -> [ expression ]','vector',3,'p_vector','parser.py',29),
+  ('vector -> [ inner_vector ]','vector',3,'p_vector','parser.py',30),
+  ('inner_matrix -> vector','inner_matrix',1,'p_matrix','parser.py',34),
+  ('inner_matrix -> inner_matrix , vector','inner_matrix',3,'p_matrix','parser.py',35),
+  ('matrix -> [ inner_matrix ]','matrix',3,'p_matrix','parser.py',36),
+  ('expression -> expression PLUS expression','expression',3,'p_plus','parser.py',40),
+  ('expression -> expression EQ expression','expression',3,'p_equal','parser.py',44),
+  ('statement -> ID ASSIGN expression ;','statement',4,'p_statement','parser.py',48),
+  ('statement -> ID MINUS_ASSIGN expression ;','statement',4,'p_statement','parser.py',49),
+  ('statement -> ID PLUS_ASSIGN expression ;','statement',4,'p_statement','parser.py',50),
+  ('statement -> ID TIMES_ASSIGN expression ;','statement',4,'p_statement','parser.py',51),
+  ('statement -> ID DIVIDE_ASSIGN expression ;','statement',4,'p_statement','parser.py',52),
+  ('code_block -> { statements_list }','code_block',3,'p_code_block','parser.py',56),
+  ('code_block -> { statement }','code_block',3,'p_code_block','parser.py',57),
+  ('statements_list -> statements_list statement','statements_list',2,'p_code_block','parser.py',58),
+  ('statements_list -> statement statement','statements_list',2,'p_code_block','parser.py',59),
+  ('statement -> IF ( expression ) statement','statement',5,'p_if_statement','parser.py',63),
+  ('statement -> IF ( expression ) code_block','statement',5,'p_if_statement','parser.py',64),
+  ('statement -> IF ( expression ) statement else_block','statement',6,'p_if_statement','parser.py',65),
+  ('statement -> IF ( expression ) code_block else_block','statement',6,'p_if_statement','parser.py',66),
+  ('else_block -> ELSE statement','else_block',2,'p_if_statement','parser.py',67),
+  ('else_block -> ELSE code_block','else_block',2,'p_if_statement','parser.py',68),
 ]

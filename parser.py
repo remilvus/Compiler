@@ -4,6 +4,8 @@ from scanner import *
 
 precedence = (
     ('nonassoc', 'JUST_IF'),
+    ('nonassoc', 'ELSE'),
+    ('nonassoc', 'ASSIGN', 'MINUS_ASSIGN', 'PLUS_ASSIGN', 'TIMES_ASSIGN', 'DIVIDE_ASSIGN'),
     ('left', 'EQ'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
@@ -43,13 +45,27 @@ def p_equal(p):
 
 
 def p_statement(p):
-    '''statement : expression ';'
-                 | '{' statement '}' '''
+    '''statement : ID ASSIGN expression ';'
+                 | ID MINUS_ASSIGN expression ';'
+                 | ID PLUS_ASSIGN expression ';'
+                 | ID TIMES_ASSIGN expression ';'
+                 | ID DIVIDE_ASSIGN expression ';' '''
+
+
+def p_code_block(p):
+    '''code_block      : '{' statements_list '}'
+                       | '{' statement '}'
+       statements_list : statements_list statement
+                       | statement statement'''
 
 
 def p_if_statement(p):
     '''statement : IF '(' expression ')' statement %prec JUST_IF
-                 | IF '(' expression ')' statement ELSE statement'''
+                 | IF '(' expression ')' code_block %prec JUST_IF
+                 | IF '(' expression ')' statement else_block
+                 | IF '(' expression ')' code_block else_block
+       else_block : ELSE statement
+                  | ELSE code_block'''
 
 
 def p_error(p):
@@ -60,4 +76,4 @@ def p_error(p):
         print("Unexpected end of input")
 
 
-parser = yacc.yacc(start='statement')
+parser = yacc.yacc(start='statements_list')
