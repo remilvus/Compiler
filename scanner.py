@@ -4,12 +4,10 @@ reserved = {word: word.upper() for word in 'if else for while break continue ret
 
 
 tokens = ['PLUS',  'MINUS',  'TIMES',  'DIVIDE',
-          'PLUS_MAT', 'MINUS_MAT', 'TIMES_MAT', "DIVIDE_MAT",
+          'PLUS_MAT', 'MINUS_MAT', 'TIMES_MAT', "DIVIDE_MAT", "TRANSPOSE",
           'ASSIGN', 'MINUS_ASSIGN', 'PLUS_ASSIGN', 'TIMES_ASSIGN', 'DIVIDE_ASSIGN',
           'EQ', 'NE', 'LT', 'LE', 'GT', 'GE',
-          'FLOAT', 'INT', 'STRING', 'ID', 'COMMENT',
-         # 'LPAREN',  'RPAREN', 'LBRACE', 'RBRACE', 'LBRACK', 'RBRACK',
-          #'RANGE', "TRANS", 'COM', 'SEMCOL'
+          'FLOAT', 'INT', 'STRING', 'ID'
           ] + list(reserved.values())
 
 
@@ -23,6 +21,7 @@ t_PLUS_MAT = r'\.\+'
 t_MINUS_MAT = r'\.-'
 t_TIMES_MAT = r'\.\*'
 t_DIVIDE_MAT = r'\./'
+t_TRANSPOSE = r"'"
 
 t_ASSIGN = r'='
 t_MINUS_ASSIGN = r'-='
@@ -37,17 +36,6 @@ t_LE = r'<='
 t_GT = r'>'
 t_GE = r'>='
 
-# t_LPAREN  = r'\('
-# t_RPAREN  = r'\)'
-# t_LBRACE = r'{'
-# t_RBRACE = r'}'
-# t_LBRACK = r'['
-# t_RBRACK = r']'
-
-# t_RANGE = r':'
-# t_TRANS = r"'"
-# t_COM = r','
-# t_SEMCOL = r';'
 
 literals = "()[]{}:',;"
 
