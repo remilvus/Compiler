@@ -23,3 +23,9 @@ M = zeros(n)'';
 M = eye(3 + 4);
 M = [ [2, 3, 4], [4, 5, 6] ];
 M = A .+ [ [2, 3] ]; # some comment
+
+return;
+
+M[2+4-n, 3:10] = ones(3) .+ zeros(n/4);
+M[2:2] = 0;
+M[2, 3] = 4;

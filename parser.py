@@ -23,27 +23,20 @@ def p_number(p):
 def p_expression(p):
     """expression : ID
                   | number
-                  | STRING
-                  | matrix"""
+                  | STRING"""
 
 
-def p_vector(p):
-    """inner_vector : expression ',' expression
-                    | inner_vector ',' expression
-        vector      : '[' expression ']'
-                    | '[' inner_vector ']' """
-
-
-def p_matrix(p):
-    """inner_matrix : vector
-                    | inner_matrix ',' vector
-       matrix       : '[' inner_matrix ']' """
+def p_table(p):
+    """inner_table : expression ',' expression
+                   | inner_table ',' expression
+       expression  : '[' expression ']'
+                   | '[' inner_table ']' """
 
 
 def p_matrix_maker(p):
-    """matrix : ZEROS '(' expression ')'
-              | EYE '(' expression ')'
-              | ONES '(' expression ')' """
+    """expression : ZEROS '(' expression ')'
+                  | EYE '(' expression ')'
+                  | ONES '(' expression ')' """
 
     
 def p_range(p):
@@ -95,6 +88,23 @@ def p_statement(p):
                  | ID DIVIDE_ASSIGN expression ';' """
 
 
+def p_slice(p):
+    """slice : ID '[' expression ']'
+             | ID '[' range ']'
+             | ID '[' expression ',' expression ']'
+             | ID '[' expression ',' range ']'
+             | ID '[' range ',' expression ']'
+             | ID '[' range ',' range ']' """
+
+
+def p_slicing_statement(p):
+    """statement : slice ASSIGN expression ';'
+                 | slice MINUS_ASSIGN expression ';'
+                 | slice PLUS_ASSIGN expression ';'
+                 | slice TIMES_ASSIGN expression ';'
+                 | slice DIVIDE_ASSIGN expression ';' """
+
+
 def p_statements_list(p):
     """statements_list : statements_list statement
                        | statements_list code_block
@@ -103,12 +113,13 @@ def p_statements_list(p):
 
 
 def p_return_statement(p):
-    """statement : RETURN expression ';' """
+    """statement : RETURN ';'
+                 | RETURN expression ';' """
 
 
 def p_code_block(p):
-    """code_block      : '{' statements_list '}'
-                       | '{' statement '}' """
+    """code_block : '{' statements_list '}'
+                  | '{' statement '}' """
 
 
 def p_loop_statement(p):
@@ -134,7 +145,6 @@ def p_loop(p):
                  | WHILE '(' expression ')' loop_block
                  | WHILE '(' expression ')' statement
                  | WHILE '(' expression ')' loop_statement"""
-    # reevaluating expression can be problematic
 
 
 def p_if_statement(p):
@@ -160,7 +170,7 @@ def p_loop_if_statement(p):
 
 
 def p_print(p):
-    """statement : PRINT inner_vector ';'
+    """statement : PRINT inner_table ';'
                  | PRINT expression ';' """
 
 
