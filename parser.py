@@ -3,7 +3,6 @@ from scanner import *
 
 
 precedence = (
-    ('nonassoc', 'RANGE'),
     ('nonassoc', 'JUST_IF'),
     ('nonassoc', 'ELSE'),
     ('nonassoc', 'ASSIGN', 'MINUS_ASSIGN', 'PLUS_ASSIGN', 'TIMES_ASSIGN', 'DIVIDE_ASSIGN'),
@@ -40,7 +39,7 @@ def p_matrix_maker(p):
 
     
 def p_range(p):
-    """range : expression ':' expression %prec RANGE"""
+    """range : expression ':' expression"""
 
 
 def p_negation(p):
