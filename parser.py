@@ -96,12 +96,13 @@ def p_slice(p):
              | ID '[' range ',' range ']' """
 
 
-def p_slicing_statement(p):
+def p_slicing(p):
     """statement : slice ASSIGN expression ';'
                  | slice MINUS_ASSIGN expression ';'
                  | slice PLUS_ASSIGN expression ';'
                  | slice TIMES_ASSIGN expression ';'
-                 | slice DIVIDE_ASSIGN expression ';' """
+                 | slice DIVIDE_ASSIGN expression ';'
+        expression : slice"""
 
 
 def p_statements_list(p):
@@ -122,28 +123,15 @@ def p_code_block(p):
 
 
 def p_loop_statement(p):
-    """loop_statement : BREAK ';'
-                      | CONTINUE ';' """
-
-
-def p_loop_block(p):
-    """loop_block           : '{' loop_statements_list '}'
-                            | '{' loop_statement '}'
-       loop_statements_list : loop_statements_list statement
-                            | statements_list loop_statement
-                            | loop_statement statement
-                            | statement loop_statement"""
+    """statement : BREAK ';'
+                 | CONTINUE ';' """
 
 
 def p_loop(p):
     """statement : FOR ID ASSIGN range code_block
-                 | FOR ID ASSIGN range loop_block
                  | FOR ID ASSIGN range statement
-                 | FOR ID ASSIGN range loop_statement
                  | WHILE '(' expression ')' code_block
-                 | WHILE '(' expression ')' loop_block
-                 | WHILE '(' expression ')' statement
-                 | WHILE '(' expression ')' loop_statement"""
+                 | WHILE '(' expression ')' statement"""
 
 
 def p_if_statement(p):
@@ -153,19 +141,6 @@ def p_if_statement(p):
                   | IF '(' expression ')' code_block else_block
        else_block : ELSE statement
                   | ELSE code_block"""
-
-
-def p_loop_if_statement(p):
-    """loop_statement  : IF '(' expression ')' loop_statement %prec JUST_IF
-                       | IF '(' expression ')' loop_block %prec JUST_IF
-                       | IF '(' expression ')' loop_statement loop_else_block
-                       | IF '(' expression ')' statement loop_else_block
-                       | IF '(' expression ')' loop_statement else_block
-                       | IF '(' expression ')' loop_block loop_else_block
-                       | IF '(' expression ')' code_block loop_else_block
-                       | IF '(' expression ')' loop_block else_block
-       loop_else_block : ELSE loop_statement
-                       | ELSE loop_block"""
 
 
 def p_print(p):
