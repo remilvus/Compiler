@@ -14,6 +14,16 @@ precedence = (
 )
 
 
+def p_program(p):
+    """program : statements_list
+               | statement
+               | empty"""
+
+
+def p_empty(p):
+    """empty :"""
+
+
 def p_number(p):
     """number : INT
               | FLOAT"""
@@ -156,4 +166,4 @@ def p_error(p):
         print("Unexpected end of input")
 
 
-parser = yacc.yacc(start='statements_list')
+parser = yacc.yacc(start='program')
