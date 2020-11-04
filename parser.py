@@ -16,7 +16,6 @@ precedence = (
 
 def p_program(p):
     """program : statements_list
-               | statement
                | empty"""
 
 
@@ -30,16 +29,15 @@ def p_number(p):
 
 
 def p_expression(p):
-    """expression : ID
+    """expression : slice_or_id
                   | number
                   | STRING"""
 
 
 def p_table(p):
-    """inner_table : expression ',' expression
-                   | inner_table ',' expression
-       expression  : '[' expression ']'
-                   | '[' inner_table ']' """
+    """inner_table : inner_table ',' expression
+                   | expression
+       expression  : '[' inner_table ']' """
 
 
 def p_matrix_maker(p):
@@ -89,14 +87,6 @@ def p_compare_lower(p):
                   | expression LE expression"""
 
 
-def p_statement(p):
-    """statement : ID ASSIGN expression ';'
-                 | ID MINUS_ASSIGN expression ';'
-                 | ID PLUS_ASSIGN expression ';'
-                 | ID TIMES_ASSIGN expression ';'
-                 | ID DIVIDE_ASSIGN expression ';' """
-
-
 def p_slice(p):
     """slice : ID '[' expression ']'
              | ID '[' range ']'
@@ -106,20 +96,22 @@ def p_slice(p):
              | ID '[' range ',' range ']' """
 
 
-def p_slicing(p):
-    """statement : slice ASSIGN expression ';'
-                 | slice MINUS_ASSIGN expression ';'
-                 | slice PLUS_ASSIGN expression ';'
-                 | slice TIMES_ASSIGN expression ';'
-                 | slice DIVIDE_ASSIGN expression ';'
-        expression : slice"""
+def p_slice_or_id(p):
+    """slice_or_id : ID
+                   | slice"""
+
+
+def p_statement(p):
+    """statement : slice_or_id ASSIGN expression ';'
+                 | slice_or_id MINUS_ASSIGN expression ';'
+                 | slice_or_id PLUS_ASSIGN expression ';'
+                 | slice_or_id TIMES_ASSIGN expression ';'
+                 | slice_or_id DIVIDE_ASSIGN expression ';' """
 
 
 def p_statements_list(p):
     """statements_list : statements_list statement
-                       | statements_list code_block
-                       | statement statement
-                       | statement code_block"""
+                       | statement"""
 
 
 def p_return_statement(p):
@@ -128,8 +120,7 @@ def p_return_statement(p):
 
 
 def p_code_block(p):
-    """code_block : '{' statements_list '}'
-                  | '{' statement '}' """
+    """statement : '{' statements_list '}' """
 
 
 def p_loop_statement(p):
@@ -138,24 +129,17 @@ def p_loop_statement(p):
 
 
 def p_loop(p):
-    """statement : FOR ID ASSIGN range code_block
-                 | FOR ID ASSIGN range statement
-                 | WHILE '(' expression ')' code_block
+    """statement : FOR ID ASSIGN range statement
                  | WHILE '(' expression ')' statement"""
 
 
 def p_if_statement(p):
-    """statement  : IF '(' expression ')' statement %prec JUST_IF
-                  | IF '(' expression ')' code_block %prec JUST_IF
-                  | IF '(' expression ')' statement else_block
-                  | IF '(' expression ')' code_block else_block
-       else_block : ELSE statement
-                  | ELSE code_block"""
+    """statement : IF '(' expression ')' statement %prec JUST_IF
+                 | IF '(' expression ')' statement ELSE statement"""
 
 
 def p_print(p):
-    """statement : PRINT inner_table ';'
-                 | PRINT expression ';' """
+    """statement : PRINT inner_table ';'"""
 
 
 def p_error(p):
