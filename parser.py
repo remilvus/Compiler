@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from scanner import *
-
+from ast import *
 
 precedence = (
     ('nonassoc', 'JUST_IF'),
@@ -52,6 +52,7 @@ def p_range(p):
 
 def p_negation(p):
     """expression : MINUS expression"""
+    p[0] = UnaryMinus(p[2])
 
 
 def p_binary_operators(p):
@@ -59,6 +60,7 @@ def p_binary_operators(p):
                   | expression MINUS expression
                   | expression TIMES expression
                   | expression DIVIDE expression"""
+    p[0] = BinExpr(p[2], p[1], p[3])
 
 
 def p_matrix_binary_operators(p):
@@ -66,25 +68,22 @@ def p_matrix_binary_operators(p):
                   | expression MINUS_MAT expression
                   | expression TIMES_MAT expression
                   | expression DIVIDE_MAT expression"""
+    p[0] = MatrixBinExpr(p[2], p[1], p[3])
 
 
 def p_transposition(p):
     """expression : expression TRANSPOSE"""
+    p[0] = Transposition(p[1])
 
 
-def p_compare_equal(p):
+def p_compare(p):
     """expression : expression EQ expression
-                  | expression NE expression"""
-
-
-def p_compare_greater(p):
-    """expression : expression GT expression
-                  | expression GE expression"""
-
-
-def p_compare_lower(p):
-    """expression : expression LT expression
+                  | expression NE expression
+                  | expression GT expression
+                  | expression GE expression
+                  | expression LT expression
                   | expression LE expression"""
+    p[0] = CompareExpr(p[2], p[1], p[3])
 
 
 def p_slice(p):
@@ -108,6 +107,8 @@ def p_statement(p):
                  | slice_or_id TIMES_ASSIGN expression ';'
                  | slice_or_id DIVIDE_ASSIGN expression ';' """
 
+    p[0] = AssignExpr(p[2], p[1], p[3])
+
 
 def p_statements_list(p):
     """statements_list : statements_list statement
@@ -117,7 +118,10 @@ def p_statements_list(p):
 def p_return_statement(p):
     """statement : RETURN ';'
                  | RETURN expression ';' """
-
+    if len(p) == 2:
+        p[0] = ReturnInstruction(None)
+    else:
+        p[0] = ReturnInstruction(p[2])
 
 def p_code_block(p):
     """statement : '{' statements_list '}' """
@@ -126,6 +130,8 @@ def p_code_block(p):
 def p_loop_statement(p):
     """statement : BREAK ';'
                  | CONTINUE ';' """
+
+    p[0] = LoopInstruction(p[1])
 
 
 def p_loop(p):
@@ -136,10 +142,14 @@ def p_loop(p):
 def p_if_statement(p):
     """statement : IF '(' expression ')' statement %prec JUST_IF
                  | IF '(' expression ')' statement ELSE statement"""
-
+    if len(p) == 6:
+        p[0] = If(p[3], p[5], None)
+    else:
+        p[0] = If(p[3], p[5], p[7])
 
 def p_print(p):
     """statement : PRINT inner_table ';'"""
+    p[0] = PrintInstruction(p[2])
 
 
 def p_error(p):
