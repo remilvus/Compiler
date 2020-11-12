@@ -1,91 +1,200 @@
-from dataclasses import dataclass
-
-
 class Node:
-    def __init__(self, type, children=None, leaf=None):
-        self.type = type
+    def __init__(self, children=None, leaf=None):
+        # self.type = type
         if children:
             self.children = children
         else:
             self.children = []
-        self.leaf = leaf
-
-    # pętle: while oraz for,
-    # instrukcje break, continue oraz return,
-    # instrukcje złożone,
-    # tablice oraz ich zakresy.
+        # self.leaf = leaf
 
 
-# Instructions
-@dataclass
-class ReturnInstruction(Node):
-    value: any
+class Program(Node):
+    def __init__(self, statements_list):
+        super().__init__([statements_list])
+
+        self.statements_list = statements_list
 
 
-@dataclass
-class LoopInstruction(Node):
-    instruction: any
+class Empty(Node):
+    def __init__(self):
+        super().__init__()
 
 
-@dataclass
-class PrintInstruction(Node):
-    value: any
+class Number(Node):
+    def __init__(self, number):
+        super().__init__([number])
+
+        self.number = number
 
 
-@dataclass
-class If(Node):
-    condition: any
-    if_block: any
-    else_block: any
+class Expression(Node):
+    def __init__(self, expression):
+        super().__init__([expression])
+
+        self.expression = expression
 
 
-# Arithmetic
-@dataclass
-class AssignExpr(Node):
-    op: any
-    left: any
-    right: any
+class InnerVector(Node):
+    def __init__(self, inner_vector, new_expression):
+        super().__init__([inner_vector, new_expression])
+
+        self.inner_vector = inner_vector
+        self.new_expression = new_expression
 
 
-@dataclass
-class BinExpr(Node):
-    op: any
-    left: any
-    right: any\
+class Vector(Node):
+    def __init__(self, inner_vector):
+        super().__init__([inner_vector])
 
-@dataclass
-class MatrixBinExpr(Node):
-    op: any
-    left: any
-    right: any
+        self.inner_vector = inner_vector
 
 
-@dataclass
+class Matrix(Node):
+    def __init__(self, matrix_type, argument):
+        super().__init__([matrix_type, argument])
+
+        self.matrix_type = matrix_type
+        self.argument = argument
+
+
+class Range(Node):
+    def __init__(self, from_index, to_index):
+        super().__init__([from_index, to_index])
+
+        self.from_index = from_index
+        self.to_index = to_index
+
+
 class UnaryMinus(Node):
-    value: any
+    def __init__(self, value):
+        super().__init__([value])
+
+        self.value = value
 
 
-@dataclass
-class CompareExpr(Node):
-    op: any
-    left: any
-    right: any
+class BinExpr(Node):
+    def __init__(self, op, left, right):
+        super().__init__([op, left, right])
+
+        self.op = op
+        self.left = left
+        self.right = right
 
 
-@dataclass
+class MatrixBinExpr(Node):
+    def __init__(self, op, left, right):
+        super().__init__([op, left, right])
+
+        self.op = op
+        self.left = left
+        self.right = right
+
+
 class Transposition(Node):
-    matrix: any
+    def __init__(self, matrix):
+        super().__init__([matrix])
 
-def addToClass(cls):
-    def decorator(func):
-        setattr(cls, func.__name__, func)
-    return decorator
+        self.matrix = matrix
 
-# class TreePrinter:
-#     ...
-#     @addToClass(BinExpr)
-#     def printTree(self.op):
-#         print(self.op)
-#         self.left.printTree(indent+1)
-#         self.left.printTree(indent+2)
-#     ...
+
+class CompareExpr(Node):
+    def __init__(self, op, left, right):
+        super().__init__([op, left, right])
+
+        self.op = op
+        self.left = left
+        self.right = right
+
+
+class SliceArgument(Node):
+    def __init__(self, argument):
+        super().__init__([argument])
+
+        self.argument = argument
+
+
+class Slice(Node):
+    def __init__(self, identifier, slice_argument_1, slice_argument_2):
+        super().__init__([identifier, slice_argument_1, slice_argument_2])
+
+        self.identifier = identifier
+        self.slice_argument_1 = slice_argument_1
+        self.slice_argument_2 = slice_argument_2
+
+
+class SliceOrID(Node):
+    def __init__(self, slice_or_id):
+        super().__init__([slice_or_id])
+
+        self.slice_or_id = slice_or_id
+
+
+class AssignExpr(Node):
+    def __init__(self, op, left, right):
+        super().__init__([op, left, right])
+
+        self.op = op
+        self.left = left
+        self.right = right
+
+
+class StatementsList(Node):
+    def __init__(self, statements_list, new_statement):
+        super().__init__([statements_list, new_statement])
+
+        self.statements_list = statements_list
+        self.new_statement = new_statement
+
+
+class Return(Node):
+    def __init__(self, value):
+        super().__init__([value])
+
+        self.value = value
+
+
+class CodeBlock(Node):
+    def __init__(self, statements_lists):
+        super().__init__([statements_lists])
+
+        self.statements_list = statements_lists
+
+
+class LoopStatement(Node):
+    def __init__(self, instruction):
+        super().__init__([instruction])
+
+        self.instruction = instruction
+
+
+class For(Node):
+    def __init__(self, iterator, loop_range, statement):
+        super().__init__([iterator, loop_range, statement])
+
+        self.iterator = iterator
+        self.loop_range = loop_range
+        self.statement = statement
+
+
+class While(Node):
+    def __init__(self, condition, statement):
+        super().__init__([condition, statement])
+
+        self.condition = condition
+        self.statement = statement
+
+
+class If(Node):
+    def __init__(self, condition, if_statement, else_statement):
+        super().__init__([condition, if_statement, else_statement])
+
+        self.condition = condition
+        self.if_statement = if_statement
+        self.else_statement = else_statement
+
+
+class Print(Node):
+    def __init__(self, value):
+        super().__init__([value])
+
+        self.value = value

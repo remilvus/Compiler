@@ -6,8 +6,8 @@ if __name__ == '__main__':
 
     try:
         # filename = sys.argv[1] if len(sys.argv) > 1 else "examples/scanner_example_error.txt"
-        # filename = sys.argv[1] if len(sys.argv) > 1 else "examples/parser_example_1.txt"
-        filename = sys.argv[1] if len(sys.argv) > 1 else "examples/work_example.txt"
+        filename = sys.argv[1] if len(sys.argv) > 1 else "examples/parser_example_1.txt"
+        # filename = sys.argv[1] if len(sys.argv) > 1 else "examples/work_example.txt"
         file = open(filename, "r")
     except IOError:
         print("Cannot open {0} file".format(filename))
@@ -15,4 +15,6 @@ if __name__ == '__main__':
 
     parser = parser.parser
     text = file.read()
-    parser.parse(text, lexer=scanner.lexer)
+
+    program = parser.parse(text, lexer=scanner.lexer)
+    program.print_tree()
