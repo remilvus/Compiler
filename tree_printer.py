@@ -19,7 +19,7 @@ class TreePrinter:
     @staticmethod
     @add_to_class(Program)
     def print_tree(self, indent=0):
-        self.children[0].print_tree(indent)
+        self.statements_list.print_tree(indent)
 
     @staticmethod
     @add_to_class(Empty)
@@ -30,23 +30,23 @@ class TreePrinter:
     @add_to_class(Number)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.number)
 
     @staticmethod
     @add_to_class(Expression)
     def print_tree(self, indent=0):
-        if isinstance(self.children[0], Node):
-            self.children[0].print_tree(indent)
+        if isinstance(self.expression, Node):
+            self.expression.print_tree(indent)
         else:
             print_indent(indent)
-            print(self.children[0])
+            print(self.expression)
 
     @staticmethod
     @add_to_class(InnerVector)
     def print_tree(self, indent=0):
-        if self.children[0]:
-            self.children[0].print_tree(indent)
-        self.children[1].print_tree(indent)
+        if self.inner_vector:
+            self.inner_vector.print_tree(indent)
+        self.new_expression.print_tree(indent)
 
     @staticmethod
     @add_to_class(Vector)
@@ -54,15 +54,15 @@ class TreePrinter:
         print_indent(indent)
         print("VECTOR")
 
-        self.children[0].print_tree(indent+1)
+        self.inner_vector.print_tree(indent+1)
 
     @staticmethod
     @add_to_class(Matrix)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.matrix_type)
 
-        self.children[1].print_tree(indent+1)
+        self.argument.print_tree(indent+1)
 
     @staticmethod
     @add_to_class(Range)
@@ -70,8 +70,8 @@ class TreePrinter:
         print_indent(indent)
         print("RANGE")
 
-        self.children[0].print_tree(indent + 1)
-        self.children[1].print_tree(indent + 1)
+        self.from_index.print_tree(indent + 1)
+        self.to_index.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(UnaryMinus)
@@ -79,25 +79,25 @@ class TreePrinter:
         print_indent(indent)
         print("-")
 
-        self.children[0].print_tree(indent + 1)
+        self.value.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(BinExpr)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.operator)
 
-        self.children[1].print_tree(indent+1)
-        self.children[2].print_tree(indent+1)
+        self.left.print_tree(indent+1)
+        self.right.print_tree(indent+1)
 
     @staticmethod
     @add_to_class(MatrixBinExpr)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.operator)
 
-        self.children[1].print_tree(indent + 1)
-        self.children[2].print_tree(indent + 1)
+        self.left.print_tree(indent + 1)
+        self.right.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(Transposition)
@@ -105,21 +105,21 @@ class TreePrinter:
         print_indent(indent)
         print("TRANSPOSE")
 
-        self.children[0].print_tree(indent + 1)
+        self.matrix.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(CompareExpr)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.operator)
 
-        self.children[1].print_tree(indent + 1)
-        self.children[2].print_tree(indent + 1)
+        self.left.print_tree(indent + 1)
+        self.right.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(SliceArgument)
     def print_tree(self, indent=0):
-        self.children[0].print_tree(indent)
+        self.argument.print_tree(indent)
 
     @staticmethod
     @add_to_class(Slice)
@@ -128,37 +128,37 @@ class TreePrinter:
         print("REF")
 
         print_indent(indent+1)
-        print(self.children[0])
+        print(self.identifier)
 
-        self.children[1].print_tree(indent+1)
-        if self.children[2]:
-            self.children[2].print_tree(indent+1)
+        self.slice_argument_1.print_tree(indent+1)
+        if self.slice_argument_2:
+            self.slice_argument_2.print_tree(indent+1)
 
     @staticmethod
     @add_to_class(SliceOrID)
     def print_tree(self, indent=0):
-        if isinstance(self.children[0], Node):
-            self.children[0].print_tree(indent)
+        if isinstance(self.slice_or_id, Node):
+            self.slice_or_id.print_tree(indent)
         else:
             print_indent(indent)
-            print(self.children[0])
+            print(self.slice_or_id)
 
     @staticmethod
     @add_to_class(AssignExpr)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0])
+        print(self.operator)
 
-        self.children[1].print_tree(indent + 1)
-        self.children[2].print_tree(indent + 1)
+        self.left.print_tree(indent + 1)
+        self.right.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(StatementsList)
     def print_tree(self, indent=0):
-        if self.children[0]:
-            self.children[0].print_tree(indent)
+        if self.statements_list:
+            self.statements_list.print_tree(indent)
 
-        self.children[1].print_tree(indent)
+        self.new_statement.print_tree(indent)
 
     @staticmethod
     @add_to_class(Return)
@@ -166,19 +166,19 @@ class TreePrinter:
         print_indent(indent)
         print("RETURN")
 
-        if self.children[0]:
-            self.children[0].print_tree(indent+1)
+        if self.value:
+            self.value.print_tree(indent+1)
 
     @staticmethod
     @add_to_class(CodeBlock)
     def print_tree(self, indent=0):
-        self.children[0].print_tree(indent)
+        self.statements_list.print_tree(indent)
 
     @staticmethod
     @add_to_class(LoopStatement)
     def print_tree(self, indent=0):
         print_indent(indent)
-        print(self.children[0].upper())
+        print(self.instruction.upper())
 
     @staticmethod
     @add_to_class(For)
@@ -187,10 +187,10 @@ class TreePrinter:
         print("FOR")
 
         print_indent(indent + 1)
-        print(self.children[0])
+        print(self.iterator)
 
-        self.children[1].print_tree(indent + 1)
-        self.children[2].print_tree(indent + 1)
+        self.loop_range.print_tree(indent + 1)
+        self.statement.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(While)
@@ -198,24 +198,24 @@ class TreePrinter:
         print_indent(indent)
         print("WHILE")
 
-        self.children[0].print_tree(indent + 1)
-        self.children[1].print_tree(indent + 1)
+        self.condition.print_tree(indent + 1)
+        self.statement.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(If)
     def print_tree(self, indent=0):
         print_indent(indent)
         print("IF")
-        self.children[0].print_tree(indent + 1)
+        self.condition.print_tree(indent + 1)
 
         print_indent(indent)
         print("THEN")
-        self.children[1].print_tree(indent + 1)
+        self.if_statement.print_tree(indent + 1)
 
-        if self.children[2]:
+        if self.else_statement:
             print_indent(indent)
             print("ELSE")
-            self.children[2].print_tree(indent + 1)
+            self.else_statement.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(Print)
@@ -223,4 +223,4 @@ class TreePrinter:
         print_indent(indent)
         print("PRINT")
 
-        self.children[0].print_tree(indent + 1)
+        self.value.print_tree(indent + 1)
