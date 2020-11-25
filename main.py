@@ -1,6 +1,7 @@
 import sys
 import scanner
 import parser
+# from node_visitor import TypeChecker
 
 if __name__ == '__main__':
 
@@ -16,5 +17,8 @@ if __name__ == '__main__':
     parser = parser.parser
     text = file.read()
 
-    program = parser.parse(text, lexer=scanner.lexer)
-    program.print_tree()
+    ast = parser.parse(text, lexer=scanner.lexer)
+    ast.print_tree()
+
+    # typeChecker = TypeChecker()
+    # typeChecker.visit(ast)
