@@ -1,6 +1,12 @@
+from variables_types import Type
+
+
 class Node:
-    def __init__(self, children=None, leaf=None):
-        # self.type = type
+    def __init__(self, position, children=None, leaf=None):
+        self.position = position
+        self.type = Type.UNKNOWN
+        self.size = None
+
         if children:
             assert type(children) is list
             self.children = children
@@ -10,72 +16,74 @@ class Node:
 
 
 class Program(Node):
-    def __init__(self, statements_list):
-        super().__init__([statements_list])
+    def __init__(self, position, statements_list):
+        super().__init__(position, [statements_list])
 
         self.statements_list = statements_list
 
 
 class Empty(Node):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
 
 
 class Number(Node):
-    def __init__(self, number):
-        super().__init__([number])
+    def __init__(self, position, number):
+        super().__init__(position, [number])
 
         self.number = number
 
 
 class Expression(Node):
-    def __init__(self, expression):
-        super().__init__([expression])
+    def __init__(self, position, expression):
+        super().__init__(position, [expression])
 
         self.expression = expression
 
 
 class InnerVector(Node):
-    def __init__(self, inner_vector, new_expression):
-        super().__init__([inner_vector, new_expression])
+    def __init__(self, position, inner_vector, new_expression):
+        super().__init__(position, [inner_vector])
 
-        self.inner_vector = inner_vector
-        self.new_expression = new_expression
+        self.inner_vector = inner_vector + [new_expression]
+
+    def __add__(self, other):
+        return self.inner_vector + other
 
 
 class Vector(Node):
-    def __init__(self, inner_vector):
-        super().__init__([inner_vector])
+    def __init__(self, position, inner_vector):
+        super().__init__(position, [inner_vector])
 
         self.inner_vector = inner_vector
 
 
 class Matrix(Node):
-    def __init__(self, matrix_type, argument):
-        super().__init__([matrix_type, argument])
+    def __init__(self, position, matrix_type, argument):
+        super().__init__(position, [matrix_type, argument])
 
         self.matrix_type = matrix_type
         self.argument = argument
 
 
 class Range(Node):
-    def __init__(self, from_index, to_index):
-        super().__init__([from_index, to_index])
+    def __init__(self, position, from_index, to_index):
+        super().__init__(position, [from_index, to_index])
 
         self.from_index = from_index
         self.to_index = to_index
 
 
 class UnaryMinus(Node):
-    def __init__(self, value):
-        super().__init__([value])
+    def __init__(self, position, value):
+        super().__init__(position, [value])
 
         self.value = value
 
 
 class BinExpr(Node):
-    def __init__(self, operator, left, right):
-        super().__init__([operator, left, right])
+    def __init__(self, position, operator, left, right):
+        super().__init__(position, [left, right])
 
         self.operator = operator
         self.left = left
@@ -83,8 +91,8 @@ class BinExpr(Node):
 
 
 class MatrixBinExpr(Node):
-    def __init__(self, operator, left, right):
-        super().__init__([operator, left, right])
+    def __init__(self, position, operator, left, right):
+        super().__init__(position, [left, right])
 
         self.operator = operator
         self.left = left
@@ -92,15 +100,15 @@ class MatrixBinExpr(Node):
 
 
 class Transposition(Node):
-    def __init__(self, matrix):
-        super().__init__([matrix])
+    def __init__(self, position, matrix):
+        super().__init__(position, [matrix])
 
         self.matrix = matrix
 
 
 class CompareExpr(Node):
-    def __init__(self, operator, left, right):
-        super().__init__([operator, left, right])
+    def __init__(self, position, operator, left, right):
+        super().__init__(position, [left, right])
 
         self.operator = operator
         self.left = left
@@ -108,15 +116,15 @@ class CompareExpr(Node):
 
 
 class SliceArgument(Node):
-    def __init__(self, argument):
-        super().__init__([argument])
+    def __init__(self, position, argument):
+        super().__init__(position, [argument])
 
         self.argument = argument
 
 
 class Slice(Node):
-    def __init__(self, identifier, slice_argument_1, slice_argument_2):
-        super().__init__([identifier, slice_argument_1, slice_argument_2])
+    def __init__(self, position, identifier, slice_argument_1, slice_argument_2):
+        super().__init__(position, [slice_argument_1, slice_argument_2])
 
         self.identifier = identifier
         self.slice_argument_1 = slice_argument_1
@@ -124,15 +132,15 @@ class Slice(Node):
 
 
 class SliceOrID(Node):
-    def __init__(self, slice_or_id):
-        super().__init__([slice_or_id])
+    def __init__(self, position, slice_or_id):
+        super().__init__(position, [slice_or_id])
 
         self.slice_or_id = slice_or_id
 
 
 class AssignExpr(Node):
-    def __init__(self, operator, left, right):
-        super().__init__([operator, left, right])
+    def __init__(self, position, operator, left, right):
+        super().__init__(position, [left, right])
 
         self.operator = operator
         self.left = left
@@ -140,37 +148,39 @@ class AssignExpr(Node):
 
 
 class StatementsList(Node):
-    def __init__(self, statements_list, new_statement):
-        super().__init__([statements_list, new_statement])
+    def __init__(self, position, statements_list, new_statement):
+        super().__init__(position, [statements_list])
 
-        self.statements_list = statements_list
-        self.new_statement = new_statement
+        self.statements_list = statements_list + [new_statement]
+
+    def __add__(self, other):
+        return self.statements_list + other
 
 
 class Return(Node):
-    def __init__(self, value):
-        super().__init__([value])
+    def __init__(self, position, value):
+        super().__init__(position, [value])
 
         self.value = value
 
 
 class CodeBlock(Node):
-    def __init__(self, statements_lists):
-        super().__init__([statements_lists])
+    def __init__(self, position, statements_lists):
+        super().__init__(position, [statements_lists])
 
         self.statements_list = statements_lists
 
 
 class LoopStatement(Node):
-    def __init__(self, instruction):
-        super().__init__([instruction])
+    def __init__(self, position, instruction):
+        super().__init__(position, [instruction])
 
         self.instruction = instruction
 
 
 class For(Node):
-    def __init__(self, iterator, loop_range, statement):
-        super().__init__([iterator, loop_range, statement])
+    def __init__(self, position, iterator, loop_range, statement):
+        super().__init__(position, [loop_range, statement])
 
         self.iterator = iterator
         self.loop_range = loop_range
@@ -178,16 +188,16 @@ class For(Node):
 
 
 class While(Node):
-    def __init__(self, condition, statement):
-        super().__init__([condition, statement])
+    def __init__(self, position, condition, statement):
+        super().__init__(position, [condition, statement])
 
         self.condition = condition
         self.statement = statement
 
 
 class If(Node):
-    def __init__(self, condition, if_statement, else_statement):
-        super().__init__([condition, if_statement, else_statement])
+    def __init__(self, position, condition, if_statement, else_statement):
+        super().__init__(position, [condition, if_statement, else_statement])
 
         self.condition = condition
         self.if_statement = if_statement
@@ -195,7 +205,7 @@ class If(Node):
 
 
 class Print(Node):
-    def __init__(self, value):
-        super().__init__([value])
+    def __init__(self, position, value):
+        super().__init__(position, [value])
 
         self.value = value

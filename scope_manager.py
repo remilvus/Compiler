@@ -1,21 +1,22 @@
-from types import Type
+from variables_types import Type
 
 
-class Symbol():
+class Symbol:
     name = None
     type = None
 
 
 class VariableSymbol(Symbol):
-    def __init__(self, name, type):
+    def __init__(self, name, symbol_type):
         self.name = name
-        self.type = type
+        self.type = symbol_type
 
 
+# TODO I think we do not need VectorSymbol and MatrixSymbol // Samuel
 class VectorSymbol(Symbol):
     def __init__(self, name, size):
         self.name = name
-        self.type = Type.VECOTR
+        self.type = Type.VECTOR
         self.size = size
 
 
@@ -27,31 +28,36 @@ class MatrixSymbol(Symbol):
         self.height = height
 
 
+# TODO currently (I think) all we need from here is checking whether we are in the loop
 class SymbolTable(object):
-    def __init__(self, parent, name): # parent scope and symbol table name
-        self.scopes = [{}]
+    def __init__(self):
+        self.scopes = []
 
-    def put(self, name, symbol): # put variable symbol or fundef under <name> entry
-        self.scopes[-1][name] = symbol
+    def put(self, name, symbol):  # put variable symbol or fundef under <name> entry
+        self.scopes[-1][1][name] = symbol
 
     def check_exists(self, name):
-        for scope in self.scopes[::-1]:
+        for _, scope in self.scopes[::-1]:
             if name in scope:
                 return True
         return False
 
-    def get(self, name): # get variable symbol or fundef from <name> entry
-        for scope in self.scopes[::-1]:
+    def get(self, name):  # get variable symbol or fundef from <name> entry
+        for _, scope in self.scopes[::-1]:
             if name in scope:
                 return scope[name]
-        # todo save error information
 
-    # def getParentScope(self):
-    #     pass
-    # #
+        return None
 
-    def pushScope(self, name):
-        self.scopes.append({})
+    def push_scope(self, name):
+        self.scopes.append((name, {}))
 
-    def popScope(self):
+    def pop_scope(self):
         self.scopes.pop()
+
+    def is_loop(self):
+        for name, _ in self.scopes:
+            if name in {"while", "for"}:
+                return True
+
+        return False

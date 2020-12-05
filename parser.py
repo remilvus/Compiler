@@ -9,6 +9,7 @@ precedence = (
     ('left', 'EQ', 'NE', 'GT', 'GE', 'LT', 'LE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'NEGATION'),
     ('left', 'PLUS_MAT', 'MINUS_MAT'),
     ('left', 'TIMES_MAT', 'DIVIDE_MAT'),
     ('left', 'TRANSPOSE')
@@ -19,27 +20,26 @@ def p_program(p):
     """program : statements_list
                | empty"""
 
-    p[0] = Program(p[1])
+    p[0] = Program(position(p), p[1])
 
 
 def p_empty(p):
     """empty :"""
-    p[0] = Empty()
+    p[0] = Empty(position(p))
 
 
 def p_number(p):
     """number : INT
               | FLOAT"""
 
-    p[0] = Number(p[1])
+    p[0] = Number(position(p), p[1])
 
 
 def p_expression(p):
     """expression : slice_or_id
                   | number
                   | STRING"""
-
-    p[0] = Expression(p[1])
+    p[0] = Expression(position(p), p[1])
 
 
 def p_inner_vector(p):
@@ -47,14 +47,14 @@ def p_inner_vector(p):
                     | expression"""
 
     if len(p) == 2:
-        p[0] = InnerVector([], p[1])
+        p[0] = InnerVector(position(p), [], p[1])
     else:
-        p[0] = InnerVector(p[1], p[3])
+        p[0] = InnerVector(position(p), p[1], p[3])
 
 
 def p_vector(p):
     """expression : '[' inner_vector ']' """
-    p[0] = Vector(p[2])
+    p[0] = Vector(position(p), p[2])
 
 
 def p_matrix_maker(p):
@@ -62,17 +62,17 @@ def p_matrix_maker(p):
                   | EYE '(' expression ')'
                   | ONES '(' expression ')' """
 
-    p[0] = Matrix(p[1], p[3])
+    p[0] = Matrix(position(p), p[1], p[3])
 
     
 def p_range(p):
     """range : expression ':' expression"""
-    p[0] = Range(p[1], p[3])
+    p[0] = Range(position(p), p[1], p[3])
 
 
 def p_negation(p):
-    """expression : MINUS expression"""
-    p[0] = UnaryMinus(p[2])
+    """expression : MINUS expression %prec NEGATION"""
+    p[0] = UnaryMinus(position(p), p[2])
 
 
 def p_binary_operators(p):
@@ -81,7 +81,7 @@ def p_binary_operators(p):
                   | expression TIMES expression
                   | expression DIVIDE expression"""
 
-    p[0] = BinExpr(p[2], p[1], p[3])
+    p[0] = BinExpr(position(p), p[2], p[1], p[3])
 
 
 def p_matrix_binary_operators(p):
@@ -90,12 +90,12 @@ def p_matrix_binary_operators(p):
                   | expression TIMES_MAT expression
                   | expression DIVIDE_MAT expression"""
 
-    p[0] = MatrixBinExpr(p[2], p[1], p[3])
+    p[0] = MatrixBinExpr(position(p), p[2], p[1], p[3])
 
 
 def p_transposition(p):
     """expression : expression TRANSPOSE"""
-    p[0] = Transposition(p[1])
+    p[0] = Transposition(position(p), p[1])
 
 
 def p_compare(p):
@@ -106,14 +106,14 @@ def p_compare(p):
                   | expression LT expression
                   | expression LE expression"""
 
-    p[0] = CompareExpr(p[2], p[1], p[3])
+    p[0] = CompareExpr(position(p), p[2], p[1], p[3])
 
 
 def p_slice_argument(p):
     """slice_argument : expression
                       | range"""
 
-    p[0] = SliceArgument(p[1])
+    p[0] = SliceArgument(position(p), p[1])
 
 
 def p_slice(p):
@@ -121,16 +121,16 @@ def p_slice(p):
              | ID '[' slice_argument ',' slice_argument ']' """
 
     if len(p) == 5:
-        p[0] = Slice(p[1], p[3], None)
+        p[0] = Slice(position(p), p[1], p[3], None)
     else:
-        p[0] = Slice(p[1], p[3], p[5])
+        p[0] = Slice(position(p), p[1], p[3], p[5])
 
 
 def p_slice_or_id(p):
     """slice_or_id : ID
                    | slice"""
 
-    p[0] = SliceOrID(p[1])
+    p[0] = SliceOrID(position(p), p[1])
 
 
 def p_statement(p):
@@ -140,7 +140,7 @@ def p_statement(p):
                  | slice_or_id TIMES_ASSIGN expression ';'
                  | slice_or_id DIVIDE_ASSIGN expression ';' """
 
-    p[0] = AssignExpr(p[2], p[1], p[3])
+    p[0] = AssignExpr(position(p), p[2], p[1], p[3])
 
 
 def p_statements_list(p):
@@ -148,9 +148,9 @@ def p_statements_list(p):
                        | statement"""
 
     if len(p) == 2:
-        p[0] = StatementsList([], p[1])
+        p[0] = StatementsList(position(p), [], p[1])
     else:
-        p[0] = StatementsList(p[1], p[2])
+        p[0] = StatementsList(position(p), p[1], p[2])
 
 
 def p_return_statement(p):
@@ -158,31 +158,31 @@ def p_return_statement(p):
                  | RETURN expression ';' """
 
     if len(p) == 3:
-        p[0] = Return(None)
+        p[0] = Return(position(p), None)
     else:
-        p[0] = Return(p[2])
+        p[0] = Return(position(p), p[2])
 
 
 def p_code_block(p):
     """statement : '{' statements_list '}' """
-    p[0] = CodeBlock(p[2])
+    p[0] = CodeBlock(position(p), p[2])
 
 
 def p_loop_statement(p):
     """statement : BREAK ';'
                  | CONTINUE ';' """
 
-    p[0] = LoopStatement(p[1])
+    p[0] = LoopStatement(position(p), p[1])
 
 
 def p_for_loop(p):
     """statement : FOR ID ASSIGN range statement"""
-    p[0] = For(p[2], p[4], p[5])
+    p[0] = For(position(p), p[2], p[4], p[5])
 
 
 def p_while_loop(p):
     """statement : WHILE '(' expression ')' statement"""
-    p[0] = While(p[3], p[5])
+    p[0] = While(position(p), p[3], p[5])
 
 
 def p_if_statement(p):
@@ -190,20 +190,19 @@ def p_if_statement(p):
                  | IF '(' expression ')' statement ELSE statement"""
 
     if len(p) == 6:
-        p[0] = If(p[3], p[5], None)
+        p[0] = If(position(p), p[3], p[5], None)
     else:
-        p[0] = If(p[3], p[5], p[7])
+        p[0] = If(position(p), p[3], p[5], p[7])
 
 
 def p_print(p):
     """statement : PRINT inner_vector ';' """
-    p[0] = Print(p[2])
+    p[0] = Print(position(p), p[2])
 
 
 def p_error(p):
     if p:
-        print("Syntax error at line {0}, column {1}: LexToken({2}, '{3}')"
-              .format(p.lineno, find_column(p.lexer.lexdata, p.lexer.lexpos), p.type, p.value))
+        print(f"Syntax error, {position(p)}, LexToken({p.type}, '{p.value}')")
     else:
         print("Unexpected end of input")
 

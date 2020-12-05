@@ -1,20 +1,24 @@
 from enum import Enum, auto
 
+
 class Type(Enum):
     INTNUM = auto()
     FLOAT = auto()
     STRING = auto()
-    VECOTR = auto()
+    BOOLEAN = auto()
+    RANGE = auto()
+    VECTOR = auto()
     MATRIX = auto()
-    NULL = auto() # currently unused
+    NULL = auto()  # currently unused
+    UNKNOWN = auto()
 
     @staticmethod
-    def get_type(object):
-        obj_type = type(object)
+    def get_type(obj):
+        obj_type = type(obj)
         if obj_type is int:
             return Type.INTNUM
         if obj_type is float:
             return Type.FLOAT
-        if obj_type is int:
+        if obj_type is str:
             return Type.STRING
-        return Type.NULL
+        return Type.UNKNOWN

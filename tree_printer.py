@@ -44,9 +44,8 @@ class TreePrinter:
     @staticmethod
     @add_to_class(InnerVector)
     def print_tree(self, indent=0):
-        if self.inner_vector:
-            self.inner_vector.print_tree(indent)
-        self.new_expression.print_tree(indent)
+        for element in self.inner_vector:
+            element.print_tree(indent)
 
     @staticmethod
     @add_to_class(Vector)
@@ -54,7 +53,7 @@ class TreePrinter:
         print_indent(indent)
         print("VECTOR")
 
-        self.inner_vector.print_tree(indent+1)
+        self.inner_vector.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(Matrix)
@@ -62,7 +61,7 @@ class TreePrinter:
         print_indent(indent)
         print(self.matrix_type)
 
-        self.argument.print_tree(indent+1)
+        self.argument.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(Range)
@@ -87,8 +86,8 @@ class TreePrinter:
         print_indent(indent)
         print(self.operator)
 
-        self.left.print_tree(indent+1)
-        self.right.print_tree(indent+1)
+        self.left.print_tree(indent + 1)
+        self.right.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(MatrixBinExpr)
@@ -127,12 +126,12 @@ class TreePrinter:
         print_indent(indent)
         print("REF")
 
-        print_indent(indent+1)
+        print_indent(indent + 1)
         print(self.identifier)
 
-        self.slice_argument_1.print_tree(indent+1)
+        self.slice_argument_1.print_tree(indent + 1)
         if self.slice_argument_2:
-            self.slice_argument_2.print_tree(indent+1)
+            self.slice_argument_2.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(SliceOrID)
@@ -155,10 +154,8 @@ class TreePrinter:
     @staticmethod
     @add_to_class(StatementsList)
     def print_tree(self, indent=0):
-        if self.statements_list:
-            self.statements_list.print_tree(indent)
-
-        self.new_statement.print_tree(indent)
+        for statement in self.statements_list:
+            statement.print_tree(indent)
 
     @staticmethod
     @add_to_class(Return)
@@ -167,7 +164,7 @@ class TreePrinter:
         print("RETURN")
 
         if self.value:
-            self.value.print_tree(indent+1)
+            self.value.print_tree(indent + 1)
 
     @staticmethod
     @add_to_class(CodeBlock)

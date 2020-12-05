@@ -82,15 +82,18 @@ t_ignore = ' \t'
 
 # error handling
 def t_error(t):
-    print("Illegal character '%s' in line %d column %d" %
-          (t.value[0], t.lexer.lineno, find_column(t.lexer.lexdata, t.lexer.lexpos)))
-    t.lexer.skip(1)
+    print(f"Illegal character '{t.value}', {position(t)}")
+    t.lexer.skip(len(t.value))
 
 
-# auxiliary function
+# auxiliary functions
 def find_column(input_text, token_lexpos):
     line_start = input_text.rfind('\n', 0, token_lexpos) + 1
     return (token_lexpos - line_start) + 1
+
+
+def position(token):
+    return f"line {token.lexer.lineno}, column {find_column(token.lexer.lexdata, token.lexer.lexpos)}"
 
 
 lexer = lex.lex()
