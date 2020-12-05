@@ -56,8 +56,9 @@ class TypeChecker(NodeVisitor):
 
         node.type = vector_type
 
-        # checking whether the vector is a matrix
+        # when vector is a matrix
         if vector_type == Type.VECTOR:
+            # rows sizes
             row_size = None
             for vector in node.inner_vector:
                 if vector.type == Type.VECTOR:
@@ -69,6 +70,21 @@ class TypeChecker(NodeVisitor):
                               f"while previous rows have size {row_size}, {vector.position}")
 
             node.size = (len(node.inner_vector), row_size)
+
+            # rows types
+            row_types = []
+            for element in node.inner_vector:
+                row_types.append(element.inner_vector.type)
+
+                row_type = Type.UNKNOWN
+                for t in row_types:
+                    if t != Type.UNKNOWN:
+                        if row_type == Type.UNKNOWN:
+                            row_type = t
+                        elif row_type != t:
+                            error(f"Matrix elements should be of the same type. Found types: {row_type} and {t}, " +
+                                  f"{node.position}")
+
         else:
             node.size = len(node.inner_vector)
 

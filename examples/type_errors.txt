@@ -3,9 +3,11 @@ A = [2, 3, x];
 B = [3, x, "string"];
 C = [[1, 2, 3],
      [2 ,3, 4, 5]];
-D = eye(4);
-E = zeros(3.5);
-F = ones("ones");
+D = [[x, y, 3],
+     [y, x, "string"]];
+E = eye(4);
+F = zeros(3.5);
+G = ones("ones");
 
 # range
 A = B[3:4];
