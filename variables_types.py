@@ -9,7 +9,7 @@ class Type(Enum):
     RANGE = auto()
     VECTOR = auto()
     MATRIX = auto()
-    NULL = auto()  # currently unused
+    NULL = auto()
     UNKNOWN = auto()
 
     @staticmethod

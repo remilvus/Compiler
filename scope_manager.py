@@ -12,20 +12,24 @@ class VariableSymbol(Symbol):
         self.type = symbol_type
 
 
-# TODO I think we do not need VectorSymbol and MatrixSymbol // Samuel
 class VectorSymbol(Symbol):
     def __init__(self, name, size):
         self.name = name
         self.type = Type.VECTOR
         self.size = size
 
+    def is_in(self, idx):
+        return idx < self.size
 
 class MatrixSymbol(Symbol):
-    def __init__(self, name, width, height):
+    def __init__(self, name, height, width):
         self.name = name
         self.type = Type.MATRIX
         self.width = width
         self.height = height
+
+    def is_in(self, height_idx, width_idx):
+        return width_idx < self.width and height_idx < self.height
 
 
 # TODO currently (I think) all we need from here is checking whether we are in the loop
@@ -42,7 +46,7 @@ class SymbolTable(object):
                 return True
         return False
 
-    def get(self, name):  # get variable symbol or fundef from <name> entry
+    def get(self, name) -> Symbol:  # get variable symbol or fundef from <name> entry
         for _, scope in self.scopes[::-1]:
             if name in scope:
                 return scope[name]
