@@ -138,6 +138,16 @@ class TypeChecker(NodeVisitor):
     def visit_BinExpr(self, node: BinExpr):
         self.generic_visit(node)
 
+        if self._is_null(node, node.left) or self._is_null(node, node.right):
+            return
+
+        bad_types = {Type.MATRIX, Type.VECTOR}
+        if node.left.type in bad_types or node.right.type in bad_types:
+            error(f"Invalid types in binary expression. Left type: {node.left.type}, right type: {node.right.type}, " +
+                 f"{node.position}")
+            node.type = Type.UNKNOWN
+            return
+
         if node.left.type == Type.UNKNOWN or node.right.type == Type.UNKNOWN:
             node.type = Type.UNKNOWN
         elif node.left.type == node.right.type:
@@ -151,6 +161,9 @@ class TypeChecker(NodeVisitor):
 
     def visit_MatrixBinExpr(self, node: MatrixBinExpr):
         self.generic_visit(node)
+
+        if self._is_null(node, node.left) or self._is_null(node, node.right):
+            return
 
         possible_type = {Type.MATRIX, Type.VECTOR, Type.UNKNOWN}
         if node.left.type not in possible_type or node.right.type not in possible_type:
@@ -174,6 +187,13 @@ class TypeChecker(NodeVisitor):
         if node.type in {Type.MATRIX, Type.VECTOR}:
             assert node.size
 
+    def _is_null(self, node, var):
+        if var.type == Type.NULL:
+            error(f"Uninitialized variable used. " + f"{node.position}")
+            node.type = Type.UNKNOWN
+            return True
+        return False
+
     def visit_Transposition(self, node: Transposition):
         self.visit(node.matrix)
 
@@ -186,6 +206,9 @@ class TypeChecker(NodeVisitor):
 
     def visit_CompareExpr(self, node: CompareExpr):
         self.generic_visit(node)
+
+        if self._is_null(node, node.left) or self._is_null(node, node.right):
+            return
 
         if Type.UNKNOWN in {node.left.type, node.right.type} or \
                 node.left.type == node.right.type or \
@@ -392,6 +415,10 @@ class TypeChecker(NodeVisitor):
         self.generic_visit(node)
         node.type = Type.NULL  # this node is child of statement
 
+        # test for uninitialized symbol
+        if self._is_null(node, node.right):
+            return
+
         if node.left.type == Type.NULL:  # new id
             if node.operator != "=":
                 error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`" +
@@ -403,12 +430,21 @@ class TypeChecker(NodeVisitor):
             self._put_symbol(node.left.slice_or_id, node.right.type, size)
 
         elif type(node.left.slice_or_id) is str:  # old id
+
             if node.operator == "=":
                 size = node.right.size
                 self._put_symbol(node.left.slice_or_id, node.right.type, size)
             else:
                 # update symbol type
                 left = self.symbol_table.get(node.left.slice_or_id)
+                bad_types = {Type.MATRIX, Type.VECTOR}
+                if left.type in bad_types or node.right.type in bad_types:
+                    error(
+                        f"Invalid types in assign-binary expression. Left type: {left.type}, right type: {node.right.type}, " +
+                        f"{node.position}")
+                    node.type = Type.UNKNOWN
+                    return
+
                 if left.type == Type.UNKNOWN or node.right.type == Type.UNKNOWN:
                     left.type = Type.UNKNOWN
                 elif left.type == node.right.type:
@@ -421,11 +457,12 @@ class TypeChecker(NodeVisitor):
                     left.type = Type.UNKNOWN
         else:
             assert type(node.left) is Slice
-            # todo
-            if node.operator == "=":
-                pass
-            else:
-                pass
+
+            node.type = node.left.type
+            if node.type in {Type.MATRIX, Type.VECTOR}:
+                node.size = node.left.size
+
+
 
     def _put_symbol(self, name, type, size=None):
         if type not in {Type.VECTOR, Type.MATRIX}:

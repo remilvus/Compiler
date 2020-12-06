@@ -1,3 +1,8 @@
+# uninitialized variables
+AAA = [1,2,3] + [1,2,3];
+AA = B;
+A = B + 3;
+
 # vectors and matrices
 A = [2, 3, x];
 B = [3, x, "string"];
@@ -10,7 +15,7 @@ F = zeros(3.5);
 G = ones("ones");
 
 # range
-A = B[3:4];
+A = B[3:4]; A = B[3:4];
 for i = 1:3.4 {
     break;
 }
