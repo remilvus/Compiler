@@ -1,3 +1,11 @@
+# variable with unknown type
+
+a = 123;
+if(1 > 0){
+    a = [1, 2];
+}
+b = a + "a";
+
 # uninitialized variables
 AAA = [1,2,3] + [1,2,3];
 AA = B;

@@ -38,13 +38,20 @@ class SymbolTable(object):
         self.scopes = []
 
     def put(self, name, symbol):  # put variable symbol or fundef under <name> entry
-        self.scopes[-1][1][name] = symbol
+        scope = self._find(name)
+        if scope:
+            scope[name] = symbol
+        else:
+            self.scopes[-1][1][name] = symbol
 
-    def check_exists(self, name):
+    def _find(self, name):
         for _, scope in self.scopes[::-1]:
             if name in scope:
-                return True
-        return False
+                return scope
+        return None
+
+    def check_exists(self, name):
+        return self._find(name) != None
 
     def get(self, name) -> Symbol:  # get variable symbol or fundef from <name> entry
         for _, scope in self.scopes[::-1]:
@@ -62,6 +69,13 @@ class SymbolTable(object):
     def is_loop(self):
         for name, _ in self.scopes:
             if name in {"while", "for"}:
+                return True
+
+        return False
+
+    def is_conditional(self):
+        for name, _ in self.scopes:
+            if name in {"while", "if"}:
                 return True
 
         return False

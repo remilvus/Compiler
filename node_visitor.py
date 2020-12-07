@@ -227,8 +227,6 @@ class TypeChecker(NodeVisitor):
         node.type = node.argument.type
 
 
-    # TODO: (fix) code below is assuming that type of variables cannot change what is a wrong assumption
-    # this can be fixed by changing type os Symbol to UNKNOWN when it's modified outside of `Program` scope // Adam
     def visit_Slice(self, node: Slice):
         self.generic_visit(node)
 
@@ -321,7 +319,7 @@ class TypeChecker(NodeVisitor):
                 idx = node.slice_argument_1.argument.number
                 if not symbol.is_in(idx):
                     error(f'Bad index {node.position}')
-                node.type = Type.UNKNOWN # todo assign correct type
+                node.type = Type.UNKNOWN
         else:
             node.type = Type.UNKNOWN
 
@@ -430,13 +428,15 @@ class TypeChecker(NodeVisitor):
             self._put_symbol(node.left.slice_or_id, node.right.type, size)
 
         elif type(node.left.slice_or_id) is str:  # old id
-
+            left = self.symbol_table.get(node.left.slice_or_id)
             if node.operator == "=":
-                size = node.right.size
-                self._put_symbol(node.left.slice_or_id, node.right.type, size)
+                if left.type != node.right.type and self.symbol_table.is_conditional():
+                    self._put_symbol(node.left.slice_or_id, Type.UNKNOWN)
+                else:
+                    size = node.right.size
+                    self._put_symbol(node.left.slice_or_id, node.right.type, size)
             else:
                 # update symbol type
-                left = self.symbol_table.get(node.left.slice_or_id)
                 bad_types = {Type.MATRIX, Type.VECTOR}
                 if left.type in bad_types or node.right.type in bad_types:
                     error(
