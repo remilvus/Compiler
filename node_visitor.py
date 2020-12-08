@@ -420,7 +420,7 @@ class TypeChecker(NodeVisitor):
         if node.left.type == Type.NULL:  # new id
             if node.operator != "=":
                 error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`" +
-                    f"{node.position}")
+                    f"{node.left.position}")
                 node.type = Type.UNKNOWN
                 return
 

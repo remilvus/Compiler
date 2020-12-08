@@ -32,7 +32,6 @@ class MatrixSymbol(Symbol):
         return width_idx < self.width and height_idx < self.height
 
 
-# TODO currently (I think) all we need from here is checking whether we are in the loop
 class SymbolTable(object):
     def __init__(self):
         self.scopes = []
