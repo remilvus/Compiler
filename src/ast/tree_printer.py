@@ -1,4 +1,4 @@
-from ast import *
+from src.ast.ast import *
 
 
 def add_to_class(cls):

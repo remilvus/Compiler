@@ -54,7 +54,6 @@ C = [2, 3, 4]' - "string"';
 A = B[2:3, x];
 B = C["string", 3.5];
 
-
 # loops
 N = 5;
 for i = 1:N {

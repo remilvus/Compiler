@@ -130,3 +130,7 @@ dmypy.json
 
 # idea
 .idea/
+
+# parser output
+parser.out
+parsetab.py

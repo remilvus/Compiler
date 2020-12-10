@@ -1,6 +1,6 @@
 import ply.yacc as yacc
-from scanner import *
-from tree_printer import *
+from src.scanner.scanner import *
+from src.ast.tree_printer import *
 
 precedence = (
     ('nonassoc', 'JUST_IF'),

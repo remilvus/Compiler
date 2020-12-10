@@ -1,4 +1,4 @@
-from variables_types import Type
+from src.type_checker.variables_types import Type
 
 
 class Symbol:
@@ -20,6 +20,7 @@ class VectorSymbol(Symbol):
 
     def is_in(self, idx):
         return idx < self.size
+
 
 class MatrixSymbol(Symbol):
     def __init__(self, name, height, width):
@@ -50,9 +51,9 @@ class SymbolTable(object):
         return None
 
     def check_exists(self, name):
-        return self._find(name) != None
+        return self._find(name) is not None
 
-    def get(self, name) -> Symbol:  # get variable symbol or fundef from <name> entry
+    def get(self, name):  # get variable symbol or fundef from <name> entry
         for _, scope in self.scopes[::-1]:
             if name in scope:
                 return scope[name]

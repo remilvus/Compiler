@@ -9,8 +9,8 @@ def check_parser(parser, scanner, text, capfd, filename):
     assert out == "", f"Failed on {filename}"
 
 def test_parser(capfd):
-    import parser as parser_module
-    import scanner
+    from src.parser import parser as parser_module
+    from src.scanner import scanner
 
     parser = parser_module.parser
     example_dir = "examples"

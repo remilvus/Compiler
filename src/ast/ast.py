@@ -1,8 +1,8 @@
-from variables_types import Type
+from src.type_checker.variables_types import Type
 
 
 class Node:
-    def __init__(self, position, children=None, leaf=None):
+    def __init__(self, position, children=None):
         self.position = position
         self.type = Type.UNKNOWN
         self.size = None
@@ -12,7 +12,6 @@ class Node:
             self.children = children
         else:
             self.children = []
-        # self.leaf = leaf
 
 
 class Program(Node):
