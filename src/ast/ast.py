@@ -42,7 +42,7 @@ class Expression(Node):
 
 class InnerVector(Node):
     def __init__(self, position, inner_vector, new_expression):
-        super().__init__(position, [inner_vector])
+        super().__init__(position, [inner_vector + [new_expression]])
 
         self.inner_vector = inner_vector + [new_expression]
 
@@ -148,7 +148,7 @@ class AssignExpr(Node):
 
 class StatementsList(Node):
     def __init__(self, position, statements_list, new_statement):
-        super().__init__(position, [statements_list])
+        super().__init__(position, [statements_list + [new_statement]])
 
         self.statements_list = statements_list + [new_statement]
 
@@ -207,4 +207,4 @@ class Print(Node):
     def __init__(self, position, value):
         super().__init__(position, [value])
 
-        self.value = value
+        self.value : InnerVector = value
