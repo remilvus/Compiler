@@ -2,13 +2,14 @@ import sys
 from src.scanner import scanner
 from src.parser import parser
 from src.type_checker.node_visitor import TypeChecker
+from src.interpreter.interpreter import Interpreter
 
 if __name__ == '__main__':
 
     try:
         # filename = sys.argv[1] if len(sys.argv) > 1 else "examples/types_example_3.txt"
         # filename = sys.argv[1] if len(sys.argv) > 1 else "examples/type_errors.txt"
-        filename = sys.argv[1] if len(sys.argv) > 1 else "examples/work_example.txt"
+        filename = sys.argv[1] if len(sys.argv) > 1 else "../../examples/work_example.txt"
         file = open(filename, "r")
     except IOError:
         print("Cannot open {0} file".format(filename))
@@ -22,3 +23,8 @@ if __name__ == '__main__':
 
     typeChecker = TypeChecker()
     typeChecker.visit(ast)
+
+    interpreter = Interpreter()
+    interpreter.visit(ast)
+
+
