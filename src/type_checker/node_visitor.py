@@ -75,14 +75,16 @@ class TypeChecker(NodeVisitor):
             self.__check_null(node, element)
             types.append(element.type)
 
+        node._error_request = None
         vector_type = Type.UNKNOWN
         for t in types:
             if t != Type.UNKNOWN:
                 if vector_type == Type.UNKNOWN:
                     vector_type = t
                 elif vector_type != t:
-                    error(f"Vector elements should be of the same type. Found types: {vector_type} and {t}, " +
-                          f"{node.position}")
+                    node._error_request = f"Vector elements should be of the " +\
+                    f"same type. Found types: {vector_type} and {t}, " +\
+                                          f"{node.position}"
 
         node.type = vector_type  # possible type
         # this field says that there are instances of `vector_type`
@@ -97,8 +99,8 @@ class TypeChecker(NodeVisitor):
                     if not row_size:
                         row_size = vector.size
                     elif row_size != vector.size:
-                        error("Matrix has rows with different sizes. " +
-                              f"Row {node.inner_vector.index(vector)} has size {vector.size} " +
+                        error("Matrix has rows with different sizes. " +\
+                              f"Row {node.inner_vector.index(vector)} has size {vector.size} " +\
                               f"while previous rows have size {row_size}, {vector.position}")
 
             node.size = (len(node.inner_vector), row_size)
@@ -114,15 +116,17 @@ class TypeChecker(NodeVisitor):
                         if row_type == Type.UNKNOWN:
                             row_type = t
                         elif row_type != t:
-                            error(f"Matrix elements should be of the same type. Found types: {row_type} and {t}, " +
-                                  f"{node.position}")
+                            error(f"Matrix elements should be " +\
+                            f"of the same type. Found types: {row_type} and {t}, " +\
+                                                  f"{node.position}")
 
         else:
             node.size = len(node.inner_vector)
 
     def visit_vector(self, node: Vector):
         self.visit(node.inner_vector)
-
+        if node.inner_vector._error_request:
+            error(node.inner_vector._error_request)
         if node.inner_vector.type == Type.VECTOR:
             node.type = Type.MATRIX
         else:
