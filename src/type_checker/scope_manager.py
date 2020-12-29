@@ -36,6 +36,7 @@ class MatrixSymbol(Symbol):
 class SymbolTable(object):
     def __init__(self):
         self.scopes = []
+        self.loop_count = 0
 
     def put(self, name, symbol):  # put variable symbol or fundef under <name> entry
         scope = self._find(name)
@@ -61,17 +62,17 @@ class SymbolTable(object):
         return None
 
     def push_scope(self, name):
+        if name in {"while", "for"}:
+            self.loop_count += 1
         self.scopes.append((name, {}))
 
     def pop_scope(self):
-        self.scopes.pop()
+        name, _ = self.scopes.pop()
+        if name in {"while", "for"}:
+            self.loop_count -= 1
 
     def is_loop(self):
-        for name, _ in self.scopes:
-            if name in {"while", "for"}:
-                return True
-
-        return False
+        return self.loop_count > 0
 
     def is_conditional(self):
         for name, _ in self.scopes:
