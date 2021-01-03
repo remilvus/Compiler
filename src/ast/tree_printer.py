@@ -20,6 +20,7 @@ class TreePrinter:
     @add_to_class(Program)
     def print_tree(self, indent=0):
         self.statements_list.print_tree(indent)
+        print()
 
     @staticmethod
     @add_to_class(Empty)

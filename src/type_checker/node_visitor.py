@@ -245,7 +245,7 @@ class TypeChecker(NodeVisitor):
     def visit_slice_argument(self, node: SliceArgument):
         self.visit(node.argument)
         if node.argument.type not in {Type.INTNUM, Type.RANGE, Type.UNKNOWN}:
-            error(f"Slice argument have to be an integer of range. Found: {node.argument.type}, " +
+            error(f"Slice argument have to be an integer or range. Found: {node.argument.type}, " +
                   f"{node.argument.position}")
 
         node.type = node.argument.type
@@ -363,6 +363,7 @@ class TypeChecker(NodeVisitor):
                     node.type = Type.UNKNOWN
                     return
 
+                # todo any range slice is valid in python, maybe we make it similar in our language?
                 if not (symbol.is_in(from_idx1, from_idx2) and symbol.is_in(to_idx1,
                                                                             to_idx2)):
                     error(f'Bad index {node.position}')
@@ -479,7 +480,7 @@ class TypeChecker(NodeVisitor):
                         f"{node.position}")
                     left.type = Type.UNKNOWN
         else:
-            assert type(node.left) is Slice
+            assert isinstance(node.left.slice_or_id, Slice)
 
             node.type = node.left.type
             if node.type in {Type.MATRIX, Type.VECTOR}:

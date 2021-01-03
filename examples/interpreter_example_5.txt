@@ -1,0 +1,8 @@
+for x = 1:10 {
+    sqrt_x = 1.0;
+    for i = 1:10000 {
+        tmp = sqrt_x + x / sqrt_x;
+        sqrt_x = tmp / 2;
+    }
+    print x, sqrt_x;
+}
