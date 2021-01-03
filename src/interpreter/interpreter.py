@@ -3,7 +3,6 @@ from src.type_checker.variables_types import Type
 from src.interpreter.visit import *
 from src.interpreter.memory import *
 from src.interpreter.exceptions import ReturnValueException, BreakException, ContinueException
-from src.type_checker.node_visitor import possible_operations
 import numpy as np
 from functools import reduce
 import operator
@@ -52,7 +51,7 @@ class Interpreter(object):
             return exception.value
 
     @when(Empty)
-    def visit(self, node: Empty):
+    def visit(self, _):
         return None
 
     @when(Number)

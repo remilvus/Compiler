@@ -202,9 +202,9 @@ def p_print(p):
 
 def p_error(p):
     if p:
-        print(f"Syntax error, {position(p)}, LexToken({p.type}, '{p.value}')")
+        raise SyntaxError(f"Syntax error: {position(p)}, LexToken({p.type}, '{p.value}')")
     else:
-        print("Unexpected end of input")
+        raise SyntaxError("Syntax error: unexpected end of input")
 
 
 parser = yacc.yacc(start='program')

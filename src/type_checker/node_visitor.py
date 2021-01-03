@@ -48,6 +48,10 @@ class NodeVisitor:
 
 
 class TypeChecker(NodeVisitor):
+    def __init__(self):
+        super().__init__()
+        self.correct = True
+
     def visit_program(self, node: Program):
         self.symbol_table.push_scope("program")
         self.visit(node.statements_list)
@@ -99,7 +103,7 @@ class TypeChecker(NodeVisitor):
                     if not row_size:
                         row_size = vector.size
                     elif row_size != vector.size:
-                        error("Matrix has rows with different sizes. " +\
+                        self._error("Matrix has rows with different sizes. " +\
                               f"Row {node.inner_vector.index(vector)} has size {vector.size} " +\
                               f"while previous rows have size {row_size}, {vector.position}")
 
@@ -116,7 +120,7 @@ class TypeChecker(NodeVisitor):
                         if row_type == Type.UNKNOWN:
                             row_type = t
                         elif row_type != t:
-                            error(f"Matrix elements should be " +\
+                            self._error(f"Matrix elements should be " +\
                             f"of the same type. Found types: {row_type} and {t}, " +\
                                                   f"{node.position}")
 
@@ -126,7 +130,7 @@ class TypeChecker(NodeVisitor):
     def visit_vector(self, node: Vector):
         self.visit(node.inner_vector)
         if node.inner_vector._error_request:
-            error(node.inner_vector._error_request)
+            self._error(node.inner_vector._error_request)
         if node.inner_vector.type == Type.VECTOR:
             node.type = Type.MATRIX
         else:
@@ -139,7 +143,7 @@ class TypeChecker(NodeVisitor):
         self.visit(node.argument)
 
         if node.argument.type not in {Type.INTNUM, Type.UNKNOWN}:
-            error(f"Size of '{node.matrix_type}' matrix should be an integer. Found: {node.argument.type}, " +
+            self._error(f"Size of '{node.matrix_type}' matrix should be an integer. Found: {node.argument.type}, " +
                   f"{node.position}")
 
         if type(node.argument) == Expression and type(node.argument.expression) == Number:
@@ -154,7 +158,7 @@ class TypeChecker(NodeVisitor):
 
         range_types = {Type.INTNUM, Type.UNKNOWN}
         if node.from_index.type not in range_types or node.to_index.type not in range_types:
-            error(f"Range should contain only integers. Found: {node.from_index.type} and {node.to_index.type}, " +
+            self._error(f"Range should contain only integers. Found: {node.from_index.type} and {node.to_index.type}, " +
                   f"{node.position}")
 
         node.type = Type.RANGE
@@ -166,7 +170,7 @@ class TypeChecker(NodeVisitor):
             if node.value.type in possible_operations and "-" in possible_operations[node.value.type]:
                 node.type = node.value.type
             else:
-                error(f"Negation is possible only for numbers. Found: {node.value.type}, {node.value.position}")
+                self._error(f"Negation is possible only for numbers. Found: {node.value.type}, {node.value.position}")
                 node.type = Type.UNKNOWN
 
     def visit_bin_expr(self, node: BinExpr):
@@ -186,13 +190,12 @@ class TypeChecker(NodeVisitor):
                     node.size = (node.left.size[0], node.right.size[1])
             else:
                 node.type = Type.UNKNOWN
-                error(f"Invalid types in binary expression. Left type: {node.left.type}, " +
+                self._error(f"Invalid types in binary expression. Left type: {node.left.type}, " +
                       f"right type: {node.right.type}, {node.position}")
 
-    @staticmethod
-    def __check_matrix_multiplication(node):
+    def __check_matrix_multiplication(self, node):
         if node.left.size[1] != node.right.size[0]:
-            error(f"Incompatible matrices sizes in matrix multiplication. " +
+            self._error(f"Incompatible matrices sizes in matrix multiplication. " +
                   f"Found {node.left.size} and {node.right.size}, {node.right.position}")
 
     def visit_matrix_bin_expr(self, node: MatrixBinExpr):
@@ -207,17 +210,16 @@ class TypeChecker(NodeVisitor):
                     node.size = node.left.size
                 else:
                     node.type = Type.UNKNOWN
-                    error(f"Incompatible sizes within operation: '{node.operator}'. Found: {node.left.size} and " +
+                    self._error(f"Incompatible sizes within operation: '{node.operator}'. Found: {node.left.size} and " +
                           f"{node.right.size}, but they should be equal, {node.position}")
             else:
                 node.type = Type.UNKNOWN
-                error("Matrix binary operations can be made only on matrices and vectors. " +
+                self._error("Matrix binary operations can be made only on matrices and vectors. " +
                       f"Found {node.left.type} and {node.right.type}, {node.position}")
 
-    @staticmethod
-    def __check_null(node, var):
+    def __check_null(self, node, var):
         if var.type == Type.NULL:
-            error(f"Uninitialized variable used, {node.position}")
+            self._error(f"Uninitialized variable used, {node.position}")
             node.type = Type.UNKNOWN
             return True
         return False
@@ -229,7 +231,7 @@ class TypeChecker(NodeVisitor):
             node.type = Type.MATRIX
             node.size = (node.matrix.size[1], node.matrix.size[0])
         else:
-            error(f"Only matrix can be transposed. Found: {node.matrix.type}, {node.position}")
+            self._error(f"Only matrix can be transposed. Found: {node.matrix.type}, {node.position}")
             node.type = Type.UNKNOWN
 
     def visit_compare_expr(self, node: CompareExpr):
@@ -237,7 +239,7 @@ class TypeChecker(NodeVisitor):
 
         if not self.__check_null(node, node.left) and not self.__check_null(node, node.right):
             if (node.left.type, node.right.type) not in possible_operations:
-                error("Incompatible types for comparison. " +
+                self._error("Incompatible types for comparison. " +
                       f"Left type: {node.left.type}, right type: {node.right.type}, {node.position}")
 
         node.type = Type.BOOLEAN
@@ -245,7 +247,7 @@ class TypeChecker(NodeVisitor):
     def visit_slice_argument(self, node: SliceArgument):
         self.visit(node.argument)
         if node.argument.type not in {Type.INTNUM, Type.RANGE, Type.UNKNOWN}:
-            error(f"Slice argument have to be an integer or range. Found: {node.argument.type}, " +
+            self._error(f"Slice argument have to be an integer or range. Found: {node.argument.type}, " +
                   f"{node.argument.position}")
 
         node.type = node.argument.type
@@ -254,14 +256,14 @@ class TypeChecker(NodeVisitor):
         self.generic_visit(node)
 
         if not self.symbol_table.check_exists(node.identifier):
-            error(
+            self._error(
                 f"Only initialized variables can be sliced. Variable `{node.identifier}` is uninitialized")
             node.type = Type.UNKNOWN
             return
 
         symbol = self.symbol_table.get(node.identifier)
         if symbol.type not in {Type.VECTOR, Type.MATRIX, Type.STRING, Type.UNKNOWN}:
-            error(f"Slicing can be made only on vectors, matrices or strings. Found: {symbol.type}, {node.position}")
+            self._error(f"Slicing can be made only on vectors, matrices or strings. Found: {symbol.type}, {node.position}")
 
         if symbol.type in {Type.STRING, Type.UNKNOWN}:
             node.type = symbol.type
@@ -270,7 +272,7 @@ class TypeChecker(NodeVisitor):
         if node.slice_argument_1 and node.slice_argument_2:
             # sliced element must be 2D (a Matrix)
             if symbol.type != Type.MATRIX:
-                error(f"Matrix slicing used with wrong type. Found: {symbol.type}, {node.position}")
+                self._error(f"Matrix slicing used with wrong type. Found: {symbol.type}, {node.position}")
                 return
             self._visit_matrix_in_slice_2d(node, symbol)
         else:
@@ -308,7 +310,7 @@ class TypeChecker(NodeVisitor):
                 return
 
             if not (symbol.is_in(from_idx, 0) and symbol.is_in(to_idx, 0)):
-                error(f'Bad index {node.position}')
+                self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
                 return
             node.type = Type.MATRIX
@@ -317,7 +319,7 @@ class TypeChecker(NodeVisitor):
             if type(node.slice_argument_1.argument) is Number:
                 idx = node.slice_argument_1.argument.number
                 if not symbol.is_in(idx, 0):
-                    error(f'Bad index {node.position}')
+                    self._error(f'Bad index {node.position}')
                 node.type = Type.VECTOR
                 node.size = symbol.width
         else:
@@ -332,7 +334,7 @@ class TypeChecker(NodeVisitor):
                 return
 
             if not (symbol.is_in(from_idx) and symbol.is_in(to_idx)):
-                error(f'Bad index {node.position}')
+                self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
                 return
             node.type = Type.VECTOR
@@ -341,7 +343,7 @@ class TypeChecker(NodeVisitor):
             if type(node.slice_argument_1.argument) is Number:
                 idx = node.slice_argument_1.argument.number
                 if not symbol.is_in(idx):
-                    error(f'Bad index {node.position}')
+                    self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
         else:
             node.type = Type.UNKNOWN
@@ -366,7 +368,7 @@ class TypeChecker(NodeVisitor):
                 # todo any range slice is valid in python, maybe we make it similar in our language?
                 if not (symbol.is_in(from_idx1, from_idx2) and symbol.is_in(to_idx1,
                                                                             to_idx2)):
-                    error(f'Bad index {node.position}')
+                    self._error(f'Bad index {node.position}')
                     node.type = Type.UNKNOWN
                     return
                 node.type = Type.MATRIX
@@ -376,7 +378,7 @@ class TypeChecker(NodeVisitor):
                     idx = node.slice_argument_2.argument.number
                     if not (symbol.is_in(from_idx1, idx) and symbol.is_in(to_idx1,
                                                    idx)):
-                        error(f'Bad index {node.position}')
+                        self._error(f'Bad index {node.position}')
                         node.type = Type.UNKNOWN
                         return
                     node.type = Type.VECTOR
@@ -394,7 +396,7 @@ class TypeChecker(NodeVisitor):
                     to_idx = node.slice_argument_1.argument.from_index
 
                     if not (symbol.is_in(idx, from_idx) and symbol.is_in(idx, to_idx)):
-                        error(f'Bad index {node.position}')
+                        self._error(f'Bad index {node.position}')
                         node.type = Type.UNKNOWN
                         return
 
@@ -404,7 +406,7 @@ class TypeChecker(NodeVisitor):
                     if type(node.slice_argument_2.argument) is Number:
                         idx2 = node.slice_argument_1.argument.number
                         if not symbol.is_in(idx, idx2):
-                            error(f'Bad index {node.position}')
+                            self._error(f'Bad index {node.position}')
                     node.type = Type.UNKNOWN
                 else:
                     node.type = Type.UNKNOWN
@@ -443,7 +445,7 @@ class TypeChecker(NodeVisitor):
 
         if node.left.type == Type.NULL:  # new id
             if node.operator != "=":
-                error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`" +
+                self._error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`" +
                     f"{node.left.position}")
                 node.type = Type.UNKNOWN
                 return
@@ -463,7 +465,7 @@ class TypeChecker(NodeVisitor):
                 # update symbol type
                 bad_types = {Type.MATRIX, Type.VECTOR}
                 if left.type in bad_types or node.right.type in bad_types:
-                    error(
+                    self._error(
                         f"Invalid types in assign-binary expression. Left type: {left.type}, right type: {node.right.type}, " +
                         f"{node.position}")
                     node.type = Type.UNKNOWN
@@ -476,7 +478,7 @@ class TypeChecker(NodeVisitor):
                 elif ({left.type, node.right.type} - {Type.FLOAT, Type.INTNUM}) == set():
                     left.type = Type.FLOAT
                 else:
-                    error(f"Invalid types in assign-binary expression. Left type: {left.type}, right type: {node.right.type}, " +
+                    self._error(f"Invalid types in assign-binary expression. Left type: {left.type}, right type: {node.right.type}, " +
                         f"{node.position}")
                     left.type = Type.UNKNOWN
         else:
@@ -515,7 +517,7 @@ class TypeChecker(NodeVisitor):
     def visit_loop_statement(self, node: LoopStatement):
         node.type = Type.NULL
         if not self.symbol_table.is_loop():
-            error(f"Statement '{node.instruction}' should be in a loop, {node.position}")
+            self._error(f"Statement '{node.instruction}' should be in a loop, {node.position}")
 
     def visit_for(self, node: For):
         self.symbol_table.push_scope("for")  # not a real scope
@@ -531,7 +533,7 @@ class TypeChecker(NodeVisitor):
         self.symbol_table.pop_scope()
 
         if node.condition.type is not Type.BOOLEAN:
-            error(f"Loop condition should be a boolean value, {node.condition.position}")
+            self._error(f"Loop condition should be a boolean value, {node.condition.position}")
 
         node.type = Type.NULL
 
@@ -541,13 +543,17 @@ class TypeChecker(NodeVisitor):
         self.symbol_table.pop_scope()
 
         if node.condition.type is not Type.BOOLEAN:
-            error(f"If condition should be a boolean value, {node.condition.position}")
+            self._error(f"If condition should be a boolean value, {node.condition.position}")
 
         node.type = Type.NULL
 
     def visit_print(self, node: Print):
         self.visit(node.value)
         node.type = Type.NULL
+
+    def _error(self, message):
+        print(message)
+        self.correct = False
 
 
 def to_snake_case(name):
@@ -559,7 +565,3 @@ def to_snake_case(name):
             snake_case_name += name[i].lower()
 
     return snake_case_name
-
-
-def error(message):
-    print(message)

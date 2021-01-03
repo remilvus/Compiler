@@ -207,4 +207,4 @@ class Print(Node):
     def __init__(self, position, value):
         super().__init__(position, [value])
 
-        self.value : InnerVector = value
+        self.value: InnerVector = value
