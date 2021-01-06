@@ -36,10 +36,15 @@ def p_number(p):
 
 
 def p_expression(p):
-    """expression : slice_or_id
+    """expression : '(' expression ')'
+                  | slice_or_id
                   | number
                   | STRING"""
-    p[0] = Expression(position(p), p[1])
+
+    if len(p) == 4:
+        p[0] = Expression(position(p), p[2])
+    else:
+        p[0] = Expression(position(p), p[1])
 
 
 def p_inner_vector(p):

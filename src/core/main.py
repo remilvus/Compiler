@@ -4,7 +4,6 @@ from src.parser import parser
 from src.type_checker.node_visitor import TypeChecker
 from src.interpreter.interpreter import Interpreter
 
-# todo maybe we want to add parentheses to expressions?
 if __name__ == '__main__':
 
     try:
