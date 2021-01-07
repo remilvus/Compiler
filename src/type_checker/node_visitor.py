@@ -86,8 +86,8 @@ class TypeChecker(NodeVisitor):
                 if vector_type == Type.UNKNOWN:
                     vector_type = t
                 elif vector_type != t:
-                    node._error_request = f"Vector elements should be of the " +\
-                    f"same type. Found types: {vector_type} and {t}, " +\
+                    node._error_request = f"Vector elements should be of the " + \
+                                          f"same type. Found types: {vector_type} and {t}, " +\
                                           f"{node.position}"
 
         node.type = vector_type  # possible type
@@ -95,7 +95,7 @@ class TypeChecker(NodeVisitor):
         # but there can also be instances of `Type.UNKNOWN`
 
         # when vector is a matrix
-        if vector_type == Type.VECTOR:
+        if vector_type == Type.VECTOR and len(node.inner_vector) > 0 and type(node.inner_vector[0]) == Vector:
             # rows sizes
             row_size = None
             for vector in node.inner_vector:
@@ -103,9 +103,9 @@ class TypeChecker(NodeVisitor):
                     if not row_size:
                         row_size = vector.size
                     elif row_size != vector.size:
-                        self._error("Matrix has rows with different sizes. " +\
-                              f"Row {node.inner_vector.index(vector)} has size {vector.size} " +\
-                              f"while previous rows have size {row_size}, {vector.position}")
+                        self._error("Matrix has rows with different sizes. " +
+                                    f"Row {node.inner_vector.index(vector)} has size {vector.size} " +
+                                    f"while previous rows have size {row_size}, {vector.position}")
 
             node.size = (len(node.inner_vector), row_size)
 
@@ -285,39 +285,38 @@ class TypeChecker(NodeVisitor):
 
     @staticmethod
     def _get_number_from_expression(expr):
-        if type(expr.expression) is Number:
+        if type(expr) is UnaryMinus and type(expr.value.expression) is Number:
+            return -expr.value.expression.number
+        elif type(expr.expression) is Number:
             return expr.expression.number
         return None
 
     @staticmethod
-    def _get_indices_from_range(range: Range):
+    def _get_indices_from_range(slice_range: Range):
         # gets indices if it's simple
-        from_idx = TypeChecker._get_number_from_expression(
-            range.from_index)
-        to_idx = TypeChecker._get_number_from_expression(
-            range.to_index)
-        if not from_idx or not to_idx:
-            return None, None
-        return from_idx, to_idx
+        from_idx = TypeChecker._get_number_from_expression(slice_range.from_index)
+        to_idx = TypeChecker._get_number_from_expression(slice_range.to_index)
+
+        return (from_idx, to_idx) if (from_idx is not None and to_idx is not None) else (None, None)
 
     def _visit_matrix_in_slice(self, node, symbol: MatrixSymbol):
         if node.slice_argument_1.type == Type.RANGE:
 
             # gets indices if it's simple
             from_idx, to_idx = self._get_indices_from_range(node.slice_argument_1.argument)
-            if not from_idx or not to_idx:
+            if from_idx is None or to_idx is None:
                 node.type = Type.UNKNOWN
                 return
 
-            if not (symbol.is_in(from_idx, 0) and symbol.is_in(to_idx, 0)):
+            if not (symbol.is_in(from_idx, 0, is_range=True) and symbol.is_in(to_idx, 0, is_range=True)):
                 self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
                 return
             node.type = Type.MATRIX
             node.size = (to_idx - from_idx, symbol.width)
         elif node.slice_argument_1.type == Type.INTNUM:
-            if type(node.slice_argument_1.argument) is Number:
-                idx = node.slice_argument_1.argument.number
+            if self._is_slice_argument_a_number(node.slice_argument_1):
+                idx = self._get_number_from_slice_argument(node.slice_argument_1)
                 if not symbol.is_in(idx, 0):
                     self._error(f'Bad index {node.position}')
                 node.type = Type.VECTOR
@@ -327,21 +326,20 @@ class TypeChecker(NodeVisitor):
 
     def _visit_vector_in_slice(self, node, symbol: VectorSymbol):
         if node.slice_argument_1.type == Type.RANGE:
-            from_idx, to_idx = self._get_indices_from_range(
-                node.slice_argument_1.argument)
-            if not from_idx or not to_idx:
+            from_idx, to_idx = self._get_indices_from_range(node.slice_argument_1.argument)
+            if from_idx is None or to_idx is None:
                 node.type = Type.UNKNOWN
                 return
 
-            if not (symbol.is_in(from_idx) and symbol.is_in(to_idx)):
+            if not (symbol.is_in(from_idx, is_range=True) and symbol.is_in(to_idx, is_range=True)):
                 self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
                 return
             node.type = Type.VECTOR
             node.size = to_idx - from_idx
         elif node.slice_argument_1.type == Type.INTNUM:
-            if type(node.slice_argument_1.argument) is Number:
-                idx = node.slice_argument_1.argument.number
+            if self._is_slice_argument_a_number(node.slice_argument_1):
+                idx = self._get_number_from_slice_argument(node.slice_argument_1)
                 if not symbol.is_in(idx):
                     self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
@@ -351,33 +349,34 @@ class TypeChecker(NodeVisitor):
     def _visit_matrix_in_slice_2d(self, node, symbol: MatrixSymbol):
         if node.slice_argument_1.type == Type.RANGE:
             # gets indices if it's simple
-            from_idx1, to_idx1 = self._get_indices_from_range(
-                node.slice_argument_1.argument)
-            if not from_idx1 or not to_idx1:
+            from_idx1, to_idx1 = self._get_indices_from_range(node.slice_argument_1.argument)
+            if from_idx1 is None or to_idx1 is None:
+                node.type = Type.UNKNOWN
+                return
+
+            if not (symbol.is_in(from_idx1, 0, is_range=True) and symbol.is_in(to_idx1, 0, is_range=True)):
+                self._error(f'Bad index {node.position}')
                 node.type = Type.UNKNOWN
                 return
 
             if node.slice_argument_2.type == Type.RANGE:
                 # gets indices if it's simple
-                from_idx2, to_idx2 = self._get_indices_from_range(
-                    node.slice_argument_2.argument)
-                if not from_idx1 or not to_idx1:
+                from_idx2, to_idx2 = self._get_indices_from_range(node.slice_argument_2.argument)
+                if from_idx1 is None or to_idx1 is None:
                     node.type = Type.UNKNOWN
                     return
 
-                # todo any range slice is valid in python, maybe we make it similar in our language?
-                if not (symbol.is_in(from_idx1, from_idx2) and symbol.is_in(to_idx1,
-                                                                            to_idx2)):
+                if not (symbol.is_in(0, from_idx2, is_range=True) and symbol.is_in(0, to_idx2, is_range=True)):
                     self._error(f'Bad index {node.position}')
                     node.type = Type.UNKNOWN
                     return
+
                 node.type = Type.MATRIX
                 node.size = (to_idx1 - from_idx1, to_idx2 - from_idx1)
-            elif node.slice_argument_2 == Type.INTNUM:
-                if type(node.slice_argument_2.argument) is Number:
-                    idx = node.slice_argument_2.argument.number
-                    if not (symbol.is_in(from_idx1, idx) and symbol.is_in(to_idx1,
-                                                   idx)):
+            elif node.slice_argument_2.type == Type.INTNUM:
+                if self._is_slice_argument_a_number(node.slice_argument_2):
+                    idx = self._get_number_from_slice_argument(node.slice_argument_2)
+                    if not symbol.is_in(0, idx):
                         self._error(f'Bad index {node.position}')
                         node.type = Type.UNKNOWN
                         return
@@ -388,14 +387,18 @@ class TypeChecker(NodeVisitor):
             else:
                 node.type = Type.UNKNOWN
         elif node.slice_argument_1.type == Type.INTNUM:
-            if type(node.slice_argument_1.argument) is Number:
-                idx = node.slice_argument_1.argument.number
+            if self._is_slice_argument_a_number(node.slice_argument_1):
+                idx = self._get_number_from_slice_argument(node.slice_argument_1)
 
-                if type(node.slice_argument_2.argument) is Range:
-                    from_idx = node.slice_argument_1.argument.from_index
-                    to_idx = node.slice_argument_1.argument.from_index
+                if not symbol.is_in(idx, 0):
+                    self._error(f'Bad index {node.position}')
+                    node.type = Type.UNKNOWN
+                    return
 
-                    if not (symbol.is_in(idx, from_idx) and symbol.is_in(idx, to_idx)):
+                if node.slice_argument_2.type == Type.RANGE:
+                    from_idx, to_idx = self._get_indices_from_range(node.slice_argument_2.argument)
+
+                    if not (symbol.is_in(0, from_idx, is_range=True) and symbol.is_in(0, to_idx, is_range=True)):
                         self._error(f'Bad index {node.position}')
                         node.type = Type.UNKNOWN
                         return
@@ -403,9 +406,9 @@ class TypeChecker(NodeVisitor):
                     node.type = Type.VECTOR
                     node.size = to_idx - from_idx
                 elif node.slice_argument_2.type == Type.INTNUM:
-                    if type(node.slice_argument_2.argument) is Number:
-                        idx2 = node.slice_argument_1.argument.number
-                        if not symbol.is_in(idx, idx2):
+                    if self._is_slice_argument_a_number(node.slice_argument_2):
+                        idx2 = self._get_number_from_slice_argument(node.slice_argument_2)
+                        if not symbol.is_in(0, idx2):
                             self._error(f'Bad index {node.position}')
                     node.type = Type.UNKNOWN
                 else:
@@ -414,6 +417,20 @@ class TypeChecker(NodeVisitor):
                 node.type = Type.UNKNOWN
         else:
             node.type = Type.UNKNOWN
+
+    @staticmethod
+    def _is_slice_argument_a_number(slice_argument):
+        if type(slice_argument.argument) is UnaryMinus and type(slice_argument.argument.value.expression) is Number:
+            return True
+
+        return type(slice_argument.argument) is Expression and type(slice_argument.argument.expression) is Number
+
+    @staticmethod
+    def _get_number_from_slice_argument(slice_argument):
+        if type(slice_argument.argument) is UnaryMinus:
+            return -slice_argument.argument.value.expression.number
+        else:
+            return slice_argument.argument.expression.number
 
     def visit_slice_or_id(self, node: SliceOrID):
         if type(node.slice_or_id) is str:  # id
@@ -496,8 +513,7 @@ class TypeChecker(NodeVisitor):
             if type == Type.VECTOR:
                 self.symbol_table.put(name, VectorSymbol(name, size))
             else:
-                self.symbol_table.put(name, MatrixSymbol(name,
-                                                   size[0], size[1]))
+                self.symbol_table.put(name, MatrixSymbol(name, size[0], size[1]))
 
     def visit_statements_list(self, node: StatementsList):
         for statement in node.statements_list:

@@ -18,8 +18,11 @@ class VectorSymbol(Symbol):
         self.type = Type.VECTOR
         self.size = size
 
-    def is_in(self, idx):
-        return idx < self.size
+    def is_in(self, idx, is_range=False):
+        if is_range:
+            return 0 <= idx <= self.size
+        else:
+            return 0 <= idx < self.size
 
 
 class MatrixSymbol(Symbol):
@@ -29,8 +32,11 @@ class MatrixSymbol(Symbol):
         self.width = width
         self.height = height
 
-    def is_in(self, height_idx, width_idx):
-        return width_idx < self.width and height_idx < self.height
+    def is_in(self, height_idx, width_idx, is_range=False):
+        if is_range:
+            return 0 <= width_idx <= self.width and 0 <= height_idx <= self.height
+        else:
+            return 0 <= width_idx < self.width and 0 <= height_idx < self.height
 
 
 class SymbolTable(object):
