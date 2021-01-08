@@ -29,7 +29,7 @@ class MemoryStack:
         if memory:
             return memory.get(name)
         else:
-            raise KeyError(f'{name} not found')
+            return None
 
     def set(self, name, value):  # inserts into memory stack variable <name> with value <value>
         memory: Memory = self._find(name)

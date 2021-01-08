@@ -2,37 +2,44 @@ from src.ast.ast import *
 from src.type_checker.scope_manager import *
 from src.type_checker.variables_types import Type
 
-possible_operations = {
+valid_operations = {
     Type.INTNUM: {"-"},
     Type.FLOAT: {"-"},
-    Type.UNKNOWN: {"-"},
 
-    (Type.INTNUM, Type.INTNUM): {"+", "-", "*", "/"},
-    (Type.INTNUM, Type.UNKNOWN): {"+", "-", "*", "/"},
-    (Type.UNKNOWN, Type.INTNUM): {"+", "-", "*", "/"},
-    (Type.INTNUM, Type.FLOAT): {"+", "-", "*", "/"},
-    (Type.FLOAT, Type.INTNUM): {"+", "-", "*", "/"},
-    (Type.FLOAT, Type.FLOAT): {"+", "-", "*", "/"},
-    (Type.FLOAT, Type.UNKNOWN): {"+", "-", "*", "/"},
-    (Type.UNKNOWN, Type.FLOAT): {"+", "-", "*", "/"},
+    (Type.INTNUM, Type.INTNUM): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.INTNUM, Type.FLOAT): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.FLOAT, Type.INTNUM): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.FLOAT, Type.FLOAT): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
 
-    (Type.STRING, Type.STRING): {"+"},
-    (Type.STRING, Type.UNKNOWN): {"+"},
-    (Type.UNKNOWN, Type.STRING): {"+"},
+    (Type.STRING, Type.STRING): {"+", "==", "!=", "<", "<=", ">", ">="},
 
-    (Type.STRING, Type.INTNUM): {"*"},
-    (Type.INTNUM, Type.STRING): {"*"},
+    (Type.STRING, Type.INTNUM): {"*", "==", "!="},
+    (Type.INTNUM, Type.STRING): {"*", "==", "!="},
 
     (Type.VECTOR, Type.VECTOR): {".+", ".-", ".*", "./"},
+
+    (Type.MATRIX, Type.MATRIX): {"*", ".+", ".-", ".*", "./"},
+}
+
+possible_operations = {**valid_operations, **{
+    Type.UNKNOWN: {"-"},
+
+    (Type.INTNUM, Type.UNKNOWN): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.UNKNOWN, Type.INTNUM): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.FLOAT, Type.UNKNOWN): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+    (Type.UNKNOWN, Type.FLOAT): {"+", "-", "*", "/", "==", "!=", "<", "<=", ">", ">="},
+
+    (Type.STRING, Type.UNKNOWN): {"+", "==", "!=", "<", "<=", ">", ">="},
+    (Type.UNKNOWN, Type.STRING): {"+", "==", "!=", "<", "<=", ">", ">="},
+
     (Type.VECTOR, Type.UNKNOWN): {".+", ".-", ".*", "./"},
     (Type.UNKNOWN, Type.VECTOR): {".+", ".-", ".*", "./"},
 
-    (Type.MATRIX, Type.MATRIX): {"*", ".+", ".-", ".*", "./"},
     (Type.MATRIX, Type.UNKNOWN): {"*", ".+", ".-", ".*", "./"},
     (Type.UNKNOWN, Type.MATRIX): {"*", ".+", ".-", ".*", "./"},
 
-    (Type.UNKNOWN, Type.UNKNOWN): {"+", "-", "*", "/", ".+", ".-", ".*", "./"}
-}
+    (Type.UNKNOWN, Type.UNKNOWN): {"+", "-", "*", "/", ".+", ".-", ".*", "./", "==", "!=", "<", "<=", ">", ">="}
+}}
 
 
 class NodeVisitor:
@@ -115,18 +122,21 @@ class TypeChecker(NodeVisitor):
             # rows types
             row_types = []
             for element in node.inner_vector:
-                row_types.append(element.inner_vector.type)
+                if isinstance(element, Vector):
+                    row_types.append(element.inner_vector.type)
 
-                row_type = Type.UNKNOWN
-                for t in row_types:
-                    if t != Type.UNKNOWN:
-                        if row_type == Type.UNKNOWN:
-                            row_type = t
-                        elif row_type != t:
-                            self._error(f"Matrix elements should be " +
-                                        f"of the same type. Found types: {row_type} and {t}, " +
-                                        f"{node.position}")
+            row_type = Type.UNKNOWN
+            for t in row_types:
+                if t != Type.UNKNOWN:
+                    if row_type == Type.UNKNOWN:
+                        row_type = t
+                    elif row_type != t:
+                        self._error(f"Matrix elements should be " +
+                                    f"of the same type. Found types: {row_type} and {t}, " +
+                                    f"{node.position}")
 
+        elif vector_type == Type.VECTOR:
+            node.type = Type.UNKNOWN
         else:
             node.size = len(node.inner_vector)
 
@@ -134,13 +144,15 @@ class TypeChecker(NodeVisitor):
         self.visit(node.inner_vector)
         if node.inner_vector._error_request:
             self._error(node.inner_vector._error_request)
-        if node.inner_vector.type == Type.VECTOR:
+
+        if node.inner_vector.type == Type.UNKNOWN:
+            node.type = Type.UNKNOWN
+        elif node.inner_vector.type == Type.VECTOR:
             node.type = Type.MATRIX
+            node.size = node.inner_vector.size
         else:
             node.type = Type.VECTOR
-
-        node.size = node.inner_vector.size
-        assert node.size
+            node.size = node.inner_vector.size
 
     def visit_matrix(self, node: Matrix):
         self.visit(node.argument)
@@ -191,8 +203,11 @@ class TypeChecker(NodeVisitor):
                     node.type = node.left.type if node.left.type != Type.UNKNOWN else node.right.type
 
                 if node.type == Type.MATRIX:
-                    self.__check_matrix_multiplication(node)
-                    node.size = (node.left.size[0], node.right.size[1])
+                    if node.left.type == Type.UNKNOWN or node.right.type == Type.UNKNOWN:
+                        node.type = Type.UNKNOWN
+                    else:
+                        self.__check_matrix_multiplication(node)
+                        node.size = (node.left.size[0], node.right.size[1])
             else:
                 node.type = Type.UNKNOWN
                 self._error(f"Invalid types in binary expression. Left type: {node.left.type}, " +
@@ -210,8 +225,10 @@ class TypeChecker(NodeVisitor):
             expr_type = (node.left.type, node.right.type)
 
             if expr_type in possible_operations and node.operator in possible_operations[expr_type]:
-                if node.left.size == node.right.size:
-                    node.type = node.left.type if node.left.type != Type.UNKNOWN else node.right.type
+                if expr_type[0] == Type.UNKNOWN or expr_type[1] == Type.UNKNOWN:
+                    node.type = Type.UNKNOWN
+                elif node.left.size == node.right.size:
+                    node.type = node.left.type
                     node.size = node.left.size
                 else:
                     node.type = Type.UNKNOWN
@@ -233,8 +250,10 @@ class TypeChecker(NodeVisitor):
         self.visit(node.matrix)
 
         if node.matrix.type in {Type.MATRIX, Type.UNKNOWN}:
-            node.type = Type.MATRIX
-            node.size = (node.matrix.size[1], node.matrix.size[0])
+            if node.matrix.type == Type.MATRIX:
+                node.size = (node.matrix.size[1], node.matrix.size[0])
+
+            node.type = node.matrix.type
         else:
             self._error(f"Only matrix can be transposed. Found: {node.matrix.type}, {node.position}")
             node.type = Type.UNKNOWN
@@ -243,7 +262,8 @@ class TypeChecker(NodeVisitor):
         self.generic_visit(node)
 
         if not self.__check_null(node, node.left) and not self.__check_null(node, node.right):
-            if (node.left.type, node.right.type) not in possible_operations:
+            expr_type = (node.left.type, node.right.type)
+            if expr_type not in possible_operations or node.operator not in possible_operations[expr_type]:
                 self._error("Incompatible types for comparison. " +
                             f"Left type: {node.left.type}, right type: {node.right.type}, {node.position}")
 
@@ -467,7 +487,7 @@ class TypeChecker(NodeVisitor):
 
         if node.left.type == Type.NULL:  # new id
             if node.operator != "=":
-                self._error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`" +
+                self._error(f"Binary operation on uninitialized variable. Variable name: `{node.left.slice_or_id}`, " +
                             f"{node.left.position}")
                 node.type = Type.UNKNOWN
                 return

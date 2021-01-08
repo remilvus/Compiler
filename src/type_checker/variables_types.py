@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import numpy as np
 
 
 class Type(Enum):
@@ -21,4 +22,11 @@ class Type(Enum):
             return Type.FLOAT
         if obj_type is str:
             return Type.STRING
+        if isinstance(obj, np.ndarray):
+            if len(obj.shape) == 1:
+                return Type.VECTOR
+            else:
+                return Type.MATRIX
+        if obj_type is list:
+            return Type.VECTOR
         return Type.UNKNOWN
