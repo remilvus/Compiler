@@ -44,6 +44,9 @@ class MemoryStack:
     def pop(self):          # pops the top memory from the stack
         self.stack.pop()
 
+    def get_memory_name(self):
+        return self.stack[-1].name
+
     def _find(self, name):  # finds first <memory> containing <name>
         for mem in self.stack[::-1]:
             if name in mem:

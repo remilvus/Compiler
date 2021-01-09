@@ -64,7 +64,11 @@ class Interpreter(object):
         if Type.get_type(node.expression) == Type.STRING:
             return node.expression
         else:
-            return self.visit(node.expression)
+            expression = self.visit(node.expression)
+            if expression is None and isinstance(node.expression, SliceOrID):
+                error(f"Uninitialized variable `{node.expression.slice_or_id}`", node.expression)
+
+            return expression
 
     @when(InnerVector)
     def visit(self, node: InnerVector):
@@ -292,7 +296,12 @@ class Interpreter(object):
     @when(StatementsList)
     def visit(self, node: StatementsList):
         for statement in node.statements_list:
-            self.visit(statement)
+            if isinstance(statement, CodeBlock):
+                self.memory_stack.push("code_block")
+                self.visit(statement)
+                self.memory_stack.pop()
+            else:
+                self.visit(statement)
 
         return None
 
@@ -320,41 +329,56 @@ class Interpreter(object):
         if range_types[0] != Type.INTNUM or range_types[1] != Type.INTNUM:
             error(f"Range should contain only integers. Found: {range_types[0]} and {range_types[1]}", node)
 
+        self.memory_stack.push("for")
+
         for i in range(from_index, to_index):
-            self.memory_stack.push("for")
             self.memory_stack.set(node.iterator, i)
 
             try:
                 self.visit(node.statement)
             except BreakException:
+                self._exit_nested_scopes("for")
                 break
             except ContinueException:
+                self._exit_nested_scopes("for")
                 pass
-            finally:
-                self.memory_stack.pop()
+
+        self.memory_stack.pop()
 
         return None
 
     @when(While)
     def visit(self, node: While):
+        self.memory_stack.push("while")
+
         while self.visit(node.condition):
-            self.memory_stack.push("while")
             try:
                 self.visit(node.statement)
             except BreakException:
+                self._exit_nested_scopes("while")
                 break
             except ContinueException:
+                self._exit_nested_scopes("while")
                 pass
-            self.memory_stack.pop()
+
+        self.memory_stack.pop()
 
         return None
+
+    def _exit_nested_scopes(self, loop_type):
+        while self.memory_stack.get_memory_name() != loop_type:
+            self.memory_stack.pop()
 
     @when(If)
     def visit(self, node: If):
         if self.visit(node.condition):
+            self.memory_stack.push("if")
             self.visit(node.if_statement)
+            self.memory_stack.pop()
         elif node.else_statement:
+            self.memory_stack.push("if")
             self.visit(node.else_statement)
+            self.memory_stack.pop()
 
         return None
 
