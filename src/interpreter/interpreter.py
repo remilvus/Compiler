@@ -220,10 +220,10 @@ class Interpreter(object):
 
         value = self.memory_stack.get(node.identifier)
 
-        if Type.get_type(value) not in {Type.VECTOR, Type.MATRIX}:
+        if Type.get_type(value) not in {Type.VECTOR, Type.MATRIX, Type.STRING}:
             error(f"only vectors and matrices can be sliced, found {Type.get_type(value)}", node)
 
-        size = (len(value),) if type(value) == list else value.shape
+        size = (len(value),) if type(value) in {list, str} else value.shape
 
         if type(node.slice_argument_1) == int and (node.slice_argument_1 >= size[0] or node.slice_argument_1 < 0):
             error(f"index {node.slice_argument_1} is out of bounds for axis 0 with size {size[0]}", node)
